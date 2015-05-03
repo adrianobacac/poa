@@ -26,3 +26,9 @@
 *.exe
 *.out
 *.app
+
+*.d
+
+*.txt
+*.dot
+/graph.jpg
