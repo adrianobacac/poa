@@ -108,9 +108,10 @@ PoMsa::PoMsa(std::string filePath) {
 				previousLink->previous->next.push_back(previousLink);
 			}
 		}
-		for (int i = 0; i < this->seqs.size(); ++i){
-			this->seqs[i]->setStartNode(this->nodes[nodeStartIds[i]]);
-		}
+		
+	}
+	for (int i = 0; i < this->seqs.size(); ++i){
+		this->seqs[i]->setStartNode(this->nodes[nodeStartIds[i]]);
 	}
 
 	fin.close();

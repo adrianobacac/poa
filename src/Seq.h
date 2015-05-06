@@ -31,6 +31,8 @@ public:
 	void rescaleWeight(int factor);
 
 	void setStartNode(Node *stratNode);
+	void nodes(std::list<Node *> *nodeList);
+	
 };
 
 

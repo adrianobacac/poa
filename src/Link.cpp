@@ -14,6 +14,7 @@ Link::Link(Node* previous, Node* next) :
 	set_intersection(next->seqs.begin(), next->seqs.end(),
 			previous->seqs.begin(), previous->seqs.end(),
 			std::inserter(intersect, intersect.begin()));
+
 	std::cout << previous->nucl << " -> " << next->nucl << std::endl;
 	for (Seq *seqNext : intersect) {
 		std::cout << seqNext->name << std::endl;
@@ -63,6 +64,10 @@ int Link::weight() {
 		weight += seq->weight;
 	}
 	return weight;
+}
+
+bool Link::hasSeq(Seq *querySeq){
+	return std::find(this->seqs.begin(), this->seqs.end(), querySeq) != this->seqs.end();
 }
 
 Link::~Link() {

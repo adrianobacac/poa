@@ -27,6 +27,8 @@ public:
 	Link(Node *previous, Node *next);
 
 	int weight();
+	
+	bool hasSeq(Seq *querySeq);
 
 
 	virtual ~Link();

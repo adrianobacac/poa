@@ -6,6 +6,7 @@
  */
 
 #include "Seq.h"
+#include <cassert>
 
 Seq::Seq(std::string name, std::string title, int nodeCnt,
 		int weight):name(name), title(title), nodeCnt(nodeCnt), weight(weight), consensus(nullptr) {
@@ -15,6 +16,23 @@ void Seq::rescaleWeight(int factor) {
 	weight *= factor;
 }
 
-void Seq::setStartNode(Node *stratNode){
+void Seq::setStartNode(Node *startNode){
+	assert(startNode->hasSeq(this));
 	this->startNode = startNode;
+}
+
+void Seq::nodes(std::list<Node *> *nodeList){
+	assert(this->startNode != nullptr);
+	assert(nodeList != nullptr);
+	nodeList->clear();
+	Node *node = this->startNode;
+	nodeList->push_back(node);
+	Link *link;
+
+	while (link = node->LinkTo(this)){
+		node = link->next;
+		nodeList->push_back(node);
+	}
+	
+
 }

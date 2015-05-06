@@ -45,6 +45,9 @@ public:
      */
     std::vector<Node *> traceback();
 
+	bool hasSeq(Seq *seq);
+
+	Link *LinkTo(Seq *seq);
 
     std::string dotFormat();
 };
