@@ -9,6 +9,7 @@
 #define SEQ_H_
 
 #include <string>
+#include <list>
 #include "Node.h"
 
 class Node;
@@ -21,13 +22,13 @@ public:
 	int nodeCnt;
 
 	int startNode;
-
 	int weight;
 	Seq *consensus;
 
 	Seq(std::string name, std::string title, int startNode, int nodeCnt,
 			int weight);
 	void rescaleWeight(int factor);
+
 };
 
 #endif /* SEQ_H_ */

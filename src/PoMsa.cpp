@@ -7,7 +7,6 @@
 
 
 #include "PoMsa.h"
-
 PoMsa::PoMsa(std::string filePath) {
 	std::ifstream fin;
 	fin.open(filePath);

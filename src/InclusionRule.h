@@ -1,8 +1,10 @@
 #pragma once
-class InclusionRule
-{
+#include "Node.h"
+
+class InclusionRule{
 public:
 	InclusionRule();
-	~InclusionRule();
+	virtual ~InclusionRule()=0;
+	virtual void process(Node *node)=0;
 };
 
