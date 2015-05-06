@@ -21,14 +21,17 @@ public:
 	std::string title;
 	int nodeCnt;
 
-	int startNode;
+
+	Node *startNode;
 	int weight;
 	Seq *consensus;
 
-	Seq(std::string name, std::string title, int startNode, int nodeCnt,
+	Seq(std::string name, std::string title, int nodeCnt,
 			int weight);
 	void rescaleWeight(int factor);
 
+	void setStartNode(Node *stratNode);
 };
+
 
 #endif /* SEQ_H_ */

@@ -7,10 +7,14 @@
 
 #include "Seq.h"
 
-Seq::Seq(std::string name, std::string title, int startNode, int nodeCnt,
-		int weight):name(name), title(title),startNode(startNode), nodeCnt(nodeCnt), weight(weight), consensus(nullptr) {
+Seq::Seq(std::string name, std::string title, int nodeCnt,
+		int weight):name(name), title(title), nodeCnt(nodeCnt), weight(weight), consensus(nullptr) {
 }
 
 void Seq::rescaleWeight(int factor) {
 	weight *= factor;
+}
+
+void Seq::setStartNode(Node *stratNode){
+	this->startNode = startNode;
 }

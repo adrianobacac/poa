@@ -5,7 +5,7 @@
  *      Author: ppx10
  */
 
-
+#include <vector>
 #include "PoMsa.h"
 PoMsa::PoMsa(std::string filePath) {
 	std::ifstream fin;
@@ -32,6 +32,8 @@ PoMsa::PoMsa(std::string filePath) {
 	std::getline(fin, line); // SOURCECOUNT=4
 	this->seqCnt = std::stoi(line.substr(line.find('=', 0) + 1, line.length()));
 
+	std::vector<int> nodeStartIds;
+
 	for (int seqId = 0; seqId < this->seqCnt; ++seqId) {
 		std::getline(fin, line); // SOURCENAME=CRKL_HUMAN
 		std::string seqName = line.substr(line.find('=', 0) + 1, line.length());
@@ -50,9 +52,10 @@ PoMsa::PoMsa(std::string filePath) {
 		os >> none; // bundle id: -1 by default
 		std::string title;
 		std::getline(os, title); // remaining is sequence title: CRK-LIKE PROTEIN.
+		this->seqs.push_back(new Seq(seqName, title, nodeCnt, weight));
+		nodeStartIds.push_back(firstNodeId);
+				
 
-		this->seqs.push_back(
-				new Seq(seqName, title, nodeCnt, firstNodeId, weight));
 	}
 	for (int nodeId = 0; nodeId < this->nodeCnt; ++nodeId) {
 
@@ -104,6 +107,9 @@ PoMsa::PoMsa(std::string filePath) {
 				// dodaj link sa novim u sljedece od proslog nodea
 				previousLink->previous->next.push_back(previousLink);
 			}
+		}
+		for (int i = 0; i < this->seqs.size(); ++i){
+			this->seqs[i]->setStartNode(this->nodes[nodeStartIds[i]]);
 		}
 	}
 
