@@ -107,14 +107,22 @@ void HeaviestBundle::processBranch(Node *start) {
 }
 
 void HeaviestBundle::BranchCompletion() {
-
+	if (this->topScoringNode->next.size() != 0){
+		Node *best = this->ends[0];
+		for (Node *ending : this->ends){
+			if (ending->score > best->score){
+				best = ending;
+			}
+		}
+		this->topScoringNode = best;
+	}
 }
 
 HeaviestBundle::HeaviestBundle(PoMsa *poMsa, int maxThreadCount) {
 	this->poMsa = poMsa;
 
 	this->topScoringNode = nullptr;
-	this->ends = std::set<Node *>();
+	this->ends = std::vector<Node *>();
 
 	this->activeThreadCount = 0;
 	this->maxThreadCount = maxThreadCount;
@@ -138,6 +146,7 @@ std::vector<Node *> HeaviestBundle::findTopScoringPath() {
 			this->processBranch(localStart);
 		}
 	}
+	this->BranchCompletion();
 	return this->topScoringNode->traceback();
 }
 

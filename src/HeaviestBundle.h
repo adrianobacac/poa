@@ -20,7 +20,7 @@ public:
     PoMsa *poMsa;
 
     Node *topScoringNode;
-    std::set<Node*> ends;
+    std::vector<Node*> ends;
 
     int activeThreadCount;
     int maxThreadCount;

@@ -24,5 +24,7 @@ int main() {
 		std::cout << node->nucl << " -> ";
 	}
 	poMsa->dotFormat();
+
+	std::getchar();
 	return 0;
 }
