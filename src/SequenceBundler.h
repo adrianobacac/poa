@@ -1,5 +1,6 @@
 #include "InclusionRule.h"
 #include "Seq.h"
+#include "Node.h"
 #include "PoMsa.h"
 
 #include <vector>

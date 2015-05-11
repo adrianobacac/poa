@@ -3,7 +3,7 @@
 // Author      : Adriano Bacac
 // Version     :
 // Copyright   : Your copyright notice
-// Description : Hello World in C++, Ansi-style
+// Description : Consensus generator from partial order sequence aligment
 //============================================================================
 
 #include <iostream>
