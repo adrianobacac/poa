@@ -16,6 +16,9 @@ void Node::addToNext(Link* next) {
 	this->next.push_back(next);
 }
 
+void Node::addSeq(Seq *seq){
+	this->seqs.insert(seq);
+}
 
 std::vector<Node*> Node::traceback() {
 	std::vector<Node *> *path = new std::vector<Node *>();
@@ -39,6 +42,16 @@ bool Node::hasSeq(Seq *querySeq){
 Link *Node::LinkTo(Seq *querySeq){
 	for (Link *link: next){
 		if (std::find(link->seqs.begin(), link->seqs.end(), querySeq) != link->seqs.end()){
+			return link;
+		}
+	}
+	return nullptr;
+}
+
+
+Link *Node::LinkTo(Node *queryNode){
+	for (Link *link : next){
+		if (link->next == queryNode){
 			return link;
 		}
 	}

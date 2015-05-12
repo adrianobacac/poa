@@ -1,7 +1,7 @@
 #include "SequenceBundler.h"
 #include <cassert>
 #include <list>
-SequenceBundler::SequenceBundler(PoMsa *pomsa):_pomsa(pomsa){
+SequenceBundler::SequenceBundler(){
 }
 
 
@@ -20,7 +20,9 @@ void SequenceBundler::removeInclusionRule(InclusionRule  *rule){
 	}
 }
 bool SequenceBundler::_applyInsertionRules(Seq *seq, Seq *cons){
+
 	for (InclusionRule *rule : this->rules){
+		
 		rule->preprocess(seq, cons);
 	}
 	std::list<Node *> nodes;
@@ -43,12 +45,17 @@ bool SequenceBundler::_applyInsertionRules(Seq *seq, Seq *cons){
 int SequenceBundler::addSequencesToBundle(std::vector<Seq *> *seqs, Seq *consensus, std::vector<Seq *> *bundled){
 	assert(bundled != nullptr);
 	bundled->clear();
-	int cnt;
+	int cnt = 0;
 	for (Seq *seq : *seqs){
-		if (seq->consensus != nullptr && _applyInsertionRules(seq, consensus)){
+		if (seq->consensus == nullptr){
+			std::cout << "provjeram za: " << seq->name << std::endl;
+		}
+		if (seq->consensus == nullptr && _applyInsertionRules(seq, consensus)){
 			seq->consensus = consensus;
 			cnt++;
 			bundled->push_back(seq);
+			std::cout << "da" << std::endl;
+
 		}
 	}
 	if (bundled->empty()){

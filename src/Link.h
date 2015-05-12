@@ -29,7 +29,7 @@ public:
 	int weight();
 	
 	bool hasSeq(Seq *querySeq);
-
+	void addSeq(Seq *seq);
 
 	virtual ~Link();
 };

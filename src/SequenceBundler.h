@@ -11,7 +11,9 @@ class SequenceBundler
 public:
 	PoMsa *_pomsa;
 	std::set<InclusionRule *> rules;
-	SequenceBundler(PoMsa *pomsa);
+	
+	SequenceBundler();
+	
 	virtual ~SequenceBundler();
 
 	void addInclusionRule(InclusionRule *rule);

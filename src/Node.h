@@ -38,7 +38,9 @@ public:
 	 * @param next Node to add.
 	 */
     void addToNext(Link *next);
+	
 
+	void addSeq(Seq *seq);
     /**
      * Follow best previous nodes to create path.
      * @return Best path to this node.
@@ -47,6 +49,7 @@ public:
 
 	bool hasSeq(Seq *seq);
 
+	Link *LinkTo(Node *queryNode);
 	Link *LinkTo(Seq *seq);
 
     std::string dotFormat();

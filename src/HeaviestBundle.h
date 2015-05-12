@@ -17,17 +17,17 @@
 class HeaviestBundle {
 
 public:
-    PoMsa *poMsa;
+    PoMsa *_poMsa;
 
-    Node *topScoringNode;
-    std::vector<Node*> ends;
+    Node *_topScoringNode;
+    std::vector<Node*> _ends;
 
-    int activeThreadCount;
-    int maxThreadCount;
+    int _activeThreadCount;
+    int _maxThreadCount;
 
-    std::queue<Node*> toProcess;
+    std::queue<Node*> _toProcess;
 
-    std::set<Node*> threadEndPoints;
+    std::set<Node*> _threadEndPoints;
 
     /**
      * Processes branch to find local top score.
@@ -46,7 +46,7 @@ public:
      * @param topScoringNode Top scoring node.
      * @return Top scoring end node.
      */
-    void BranchCompletion();
+	Node *branchCompletion(Node *topScoringNode);
 
 
 

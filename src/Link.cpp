@@ -15,9 +15,7 @@ Link::Link(Node* previous, Node* next) :
 			previous->seqs.begin(), previous->seqs.end(),
 			std::inserter(intersect, intersect.begin()));
 
-	std::cout << previous->nucl << " -> " << next->nucl << std::endl;
 	for (Seq *seqNext : intersect) {
-		std::cout << seqNext->name << std::endl;
 		bool found = false;
 		for (Link *link : previous->next) {
 			if (std::find(link->seqs.begin(), link->seqs.end(), seqNext)
@@ -28,39 +26,16 @@ Link::Link(Node* previous, Node* next) :
 			}
 		}
 		if (!found) {
-			std::cout << " ^ dodajem" << std::endl;
 			this->seqs.push_back(seqNext);
 		}
 
 	}
 	return;
-	for (Seq *seqNext : next->seqs) {
-		for (Seq *seqPrev : previous->seqs) {
-			if (seqPrev == seqNext) {
-				this->seqs.push_back(seqNext);
-				continue;
-				// TODO popravi ovo ispod
-				for (Link *link : previous->next) {
-					if (std::find(link->seqs.begin(), link->seqs.end(), seqNext)
-							== link->seqs.end()) {
-						// u linkovima od proslog ne postoji link sa ovom sekvencom, da je postojao taj bi bio pravi
-						// u ovaj link stavljamo ovu sekvencu
-
-						std::cout << "_" << std::endl;
-						this->seqs.push_back(seqNext);
-						break;
-					}
-				}
-				break;
-			}
-		}
-	}
 }
 
 int Link::weight() {
 	int weight = 0;
 	for (Seq * seq : seqs) {
-		std::cout << "*" << std::endl;
 		weight += seq->weight;
 	}
 	return weight;
@@ -68,6 +43,11 @@ int Link::weight() {
 
 bool Link::hasSeq(Seq *querySeq){
 	return std::find(this->seqs.begin(), this->seqs.end(), querySeq) != this->seqs.end();
+}
+void Link::addSeq(Seq *seq){
+	if (!hasSeq(seq)){
+		this->seqs.push_back(seq);
+	}
 }
 
 Link::~Link() {
