@@ -29,6 +29,5 @@
 
 *.d
 
-*.txt
 *.dot
 /graph.jpg

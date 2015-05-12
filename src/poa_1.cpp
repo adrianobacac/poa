@@ -15,8 +15,13 @@
 using namespace std;
 
 int main() {
-	PoMsa *poMsa = new PoMsa("m_po_mine.aln");
-	
+	PoMsa *poMsa;
+	try {
+		poMsa = new PoMsa("m_po_mine.aln");
+	}catch (std::string message){
+		std::cerr << message << std::endl;
+		exit(-1);
+	}
 	SequenceBundler *bundler = new SequenceBundler();
 	bundler->addInclusionRule(new PercentageMatchSeqRule(1.0, 1.0));
 	

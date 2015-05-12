@@ -12,7 +12,7 @@ PoMsa::PoMsa(std::string filePath) {
 	fin.open(filePath);
 
 	if (!fin.good()) {
-		throw "File " + std::string(filePath) + "can't be opened";
+		throw "File " + std::string(filePath) + " can't be opened";
 	}
 	std::string line;
 
@@ -70,7 +70,7 @@ PoMsa::PoMsa(std::string filePath) {
 		std::set<int> alignedWithNodeIds;// A
 		std::set<Seq *> seqs; // S
 
-		while (os.eof() == false) {
+		while (!os.eof()) {
 			char option;
 			if (!(os >> option)) {
 				break;
@@ -119,7 +119,7 @@ PoMsa::PoMsa(std::string filePath) {
 }
 
 void PoMsa::createSeqOnPath(Seq* seq, std::vector<Node*> path) {
-
+ // TODO prebaci stvaranje sekvence ovdje
 }
 
 std::vector<Node *> PoMsa::getStarts() {
