@@ -18,8 +18,7 @@ Link::Link(Node* previous, Node* next) :
 	for (Seq *seqNext : intersect) {
 		bool found = false;
 		for (Link *link : previous->next) {
-			if (std::find(link->seqs.begin(), link->seqs.end(), seqNext)
-					!= link->seqs.end()) {
+			if (std::find(link->seqs.begin(), link->seqs.end(), seqNext) != link->seqs.end()) {
 				// u linkovima od proslog  postoji link sa ovom sekvencom, treba ju preskocit
 				found = true;
 				break;

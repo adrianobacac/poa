@@ -92,8 +92,8 @@ int main(int argc, char * const argv[]) {
 	
 	HeaviestBundle *hb = new HeaviestBundle(poMsa, thread_cnt);
 
-	int loop_cnt = 0;
-	while (true){
+	unsigned long unbunbled_seq_cnt = poMsa->seqs.size();
+	while (unbunbled_seq_cnt){
 		// pronadi najbolji put
 		std::vector<Node *> bestPath;
 		bestPath = hb->findTopScoringPath();
@@ -103,7 +103,7 @@ int main(int argc, char * const argv[]) {
 		Seq *new_consensus = new Seq("name", "> title", bestPath.size(), 0);
 		poMsa->cons.push_back(new_consensus);
 		poMsa->createSeqOnPath(new_consensus, bestPath);
-		poMsa->drawGraph("graph" + to_string(loop_cnt));
+		poMsa->drawGraph("graph" + to_string(unbunbled_seq_cnt));
 
 		for (Node *node : bestPath) {
 			std::cout << node->nucl << " -> ";
@@ -114,7 +114,9 @@ int main(int argc, char * const argv[]) {
 
 		// pronadi slicne sekvence
 		std::vector<Seq *> *bundle = new std::vector < Seq * > ;
-		if (bundler->addSequencesToBundle(&poMsa->seqs, new_consensus, bundle) > 0){
+		int seqs_bundled = bundler->addSequencesToBundle(&poMsa->seqs, new_consensus, bundle);
+		unbunbled_seq_cnt -= seqs_bundled;
+		if (seqs_bundled > 0){
 			std::cout << "pronasao slicne sekvence" << std::endl;
 
 			for (Seq *seq : *bundle){
@@ -129,9 +131,7 @@ int main(int argc, char * const argv[]) {
 			break;
 		}
 		std::getchar();
-		loop_cnt ++;
 	}
 
-	std::getchar();
 	return 0;
 }

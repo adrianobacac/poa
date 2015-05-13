@@ -142,7 +142,10 @@ void PoMsa::drawGraph(std::string name) {
 
 	for (Node *before : this->nodes) {
 		for(Link *nextLink : before->next){
-			std::string line = before->dotFormat() + " -> " + nextLink->next->dotFormat() +  "[ label = " + std::to_string(nextLink->weight());
+
+			std::string line = before->dotFormat() + " -> " + nextLink->next->dotFormat() +  "[ label = " +
+					std::to_string(nextLink->weight());
+
 			if (nextLink->hasSeq(lastConsensus)) {
 				line += "fillcolor = red";
 			}
