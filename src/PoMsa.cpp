@@ -136,15 +136,20 @@ std::vector<Node *> PoMsa::getStarts() {
 
 void PoMsa::drawGraph(std::string name) {
 	std::ofstream fout;
-	fout.open("test.dot");
+	fout.open(("graphs/" + name + ".dot").c_str());
 	fout << "digraph {rankdir=LR;" << std::endl;
+	Seq *lastConsensus = cons[cons.size()-1];
+
 	for (Node *before : this->nodes) {
 		for(Link *nextLink : before->next){
-			fout << "\t" << before->dotFormat() << " -> " << nextLink->next->dotFormat() << ";" <<std::endl;
+			std::string line = before->dotFormat() + " -> " + nextLink->next->dotFormat() +  "[ label = " + std::to_string(nextLink->weight());
+			if (nextLink->hasSeq(lastConsensus)) {
+				line += "fillcolor = red";
+			}
+			fout << "\t" << line << "];" <<std::endl;
 		}
 	}
 	fout << "}" << std::endl;
 	fout.close();
 
-	system(("dot test.dot -Tsvg -o graphs/" + name).c_str());
 }

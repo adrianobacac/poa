@@ -101,9 +101,9 @@ int main(int argc, char * const argv[]) {
 
 		// stvori novu sekvencu
 		Seq *new_consensus = new Seq("name", "> title", bestPath.size(), 0);
-		poMsa->cons.insert(new_consensus);
+		poMsa->cons.push_back(new_consensus);
 		poMsa->createSeqOnPath(new_consensus, bestPath);
-
+		poMsa->drawGraph("graph" + to_string(loop_cnt));
 
 		for (Node *node : bestPath) {
 			std::cout << node->nucl << " -> ";
@@ -129,11 +129,9 @@ int main(int argc, char * const argv[]) {
 			break;
 		}
 		std::getchar();
-		poMsa->drawGraph("graph" + to_string(loop_cnt));
 		loop_cnt ++;
 	}
 
 	std::getchar();
-	poMsa->drawGraph("graph" + to_string(loop_cnt));
 	return 0;
 }

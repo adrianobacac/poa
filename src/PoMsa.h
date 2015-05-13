@@ -37,7 +37,7 @@ public:
     std::vector<Seq *> seqs;
     std::vector<int> ungroupedSeqIndex;
 
-    std::set<Seq *>cons;
+    std::vector<Seq * >cons;
 
     PoMsa(std::string filePath);
     void createSeqOnPath(Seq *seq, std::vector<Node *> path);
