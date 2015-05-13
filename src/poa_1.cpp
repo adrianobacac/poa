@@ -36,14 +36,10 @@ int main() {
 		// stvori novu sekvencu
 		Seq *new_consensus = new Seq("name", "> title", bestPath.size(), 0);
 		poMsa->cons.insert(new_consensus);
-		
-		Node *previous_node = nullptr;
+		poMsa->createSeqOnPath(new_consensus, bestPath);
+
+
 		for (Node *node : bestPath) {
-			node->addSeq(new_consensus);
-			if (previous_node){
-				previous_node->LinkTo(node)->addSeq(new_consensus);
-			}
-			previous_node = node;
 			std::cout << node->nucl << " -> ";
 		}
 		std::cout << std::endl;

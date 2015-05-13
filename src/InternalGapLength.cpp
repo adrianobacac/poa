@@ -9,7 +9,7 @@ InternalGapLength::~InternalGapLength() {
 
 }
 
-virtual void InternalGapLength::preprocess(Seq *seq, Seq *cons){
+void InternalGapLength::preprocess(Seq *seq, Seq *cons){
     this->_seq = seq;
     this->_cons = cons;
     this-> _gap_length = 0;
@@ -18,7 +18,7 @@ virtual void InternalGapLength::preprocess(Seq *seq, Seq *cons){
 
 }
 
-virtual void InternalGapLength::process(Node *node){
+void InternalGapLength::process(Node *node){
     assert(_seq != nullptr && _cons != nullptr && node->hasSeq(this->_seq));
     if (!node->hasSeq(_cons) && !_was_first_match){
         return;
@@ -33,7 +33,7 @@ virtual void InternalGapLength::process(Node *node){
 
 }
 
-virtual bool InternalGapLength::result(){
+bool InternalGapLength::result(){
     assert(_gap_length >= 0 && _limit >= 0);
     return _gap_length <= _limit;
 

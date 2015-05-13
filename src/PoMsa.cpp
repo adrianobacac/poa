@@ -119,11 +119,19 @@ PoMsa::PoMsa(std::string filePath) {
 }
 
 void PoMsa::createSeqOnPath(Seq* seq, std::vector<Node*> path) {
- // TODO prebaci stvaranje sekvence ovdje
+	Node *previous_node = nullptr;
+	for (Node *node : path) {
+		node->addSeq(seq);
+		if (previous_node){
+			previous_node->LinkTo(node)->addSeq(seq);
+		}
+		previous_node = node;
+	}
 }
 
 std::vector<Node *> PoMsa::getStarts() {
 	return this->starts;
+
 }
 
 std::string PoMsa::dotFormat() {
