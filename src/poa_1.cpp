@@ -3,12 +3,13 @@
 // Author      : Adriano Bacac
 // Version     :
 // Copyright   : Your copyright notice
-// Description : Consensus generator from partial order sequence aligment
+// Description : Consensus generator from partial order sequence alignment
 //============================================================================
 
 #include <iostream>
 #include <getopt.h>
 #include <string.h>
+
 
 #include "PoMsa.h"
 #include "HeaviestBundle.h"
@@ -67,6 +68,7 @@ int parse_input(int argc, char * const argv[], string *input, string *conf, int 
 
 
 int main(int argc, char * const argv[]) {
+
 	string input;
 	string config;
 	int thread_cnt;
@@ -89,7 +91,8 @@ int main(int argc, char * const argv[]) {
 	bundler->addInclusionRule(new PercentageMatchSeqRule(1.0, 1.0));
 	
 	HeaviestBundle *hb = new HeaviestBundle(poMsa, thread_cnt);
-	
+
+	int loop_cnt = 0;
 	while (true){
 		// pronadi najbolji put
 		std::vector<Node *> bestPath;
@@ -126,11 +129,11 @@ int main(int argc, char * const argv[]) {
 			break;
 		}
 		std::getchar();
+		poMsa->drawGraph("graph" + to_string(loop_cnt));
+		loop_cnt ++;
 	}
 
-
-	poMsa->dotFormat();
-
 	std::getchar();
+	poMsa->drawGraph("graph" + to_string(loop_cnt));
 	return 0;
 }

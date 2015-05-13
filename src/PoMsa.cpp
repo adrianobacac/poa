@@ -134,7 +134,7 @@ std::vector<Node *> PoMsa::getStarts() {
 
 }
 
-std::string PoMsa::dotFormat() {
+void PoMsa::drawGraph(std::string name) {
 	std::ofstream fout;
 	fout.open("test.dot");
 	fout << "digraph {rankdir=LR;" << std::endl;
@@ -145,5 +145,6 @@ std::string PoMsa::dotFormat() {
 	}
 	fout << "}" << std::endl;
 	fout.close();
-	return "";
+
+	system(("dot test.dot -Tsvg -o graphs/" + name).c_str());
 }

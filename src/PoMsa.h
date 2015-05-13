@@ -44,8 +44,8 @@ public:
 
     std::vector<Node *> getStarts();
 
-    std::string dotFormat();
 
+    void drawGraph(std::string path);
 };
 
 #endif /* POMSA_H_ */
