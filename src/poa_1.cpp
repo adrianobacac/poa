@@ -7,6 +7,8 @@
 //============================================================================
 
 #include <iostream>
+#include <getopt.h>
+#include <string.h>
 
 #include "PoMsa.h"
 #include "HeaviestBundle.h"
@@ -14,10 +16,71 @@
 #include "PercentageMatchSeqRule.h"
 using namespace std;
 
-int main() {
+int parse_input(int argc, char * const argv[], string *input, string *conf, int *thread_count) {
+	// default values
+	*input = "in.po";
+	*conf = "config.txt";
+	*thread_count = 1;
+
+	int next_option;
+	/* String of short options */
+	const char *short_options = "t:i:c:";
+	/* The array of long options */
+	const struct option long_options[] = {
+			{ "input",  1, NULL, 'i' },
+			{ "config", 1, NULL, 'c' },
+			{ "threads", 1, NULL, 't'}
+	};
+
+	do {
+		next_option = getopt_long(argc, argv, short_options, long_options, NULL);
+		switch (next_option) {
+			case 'i':
+				/* User requested help */
+				*input = optarg;
+				break;
+			case 'c':
+				*conf = optarg;
+				break;
+			case 't':
+				*thread_count =  atoi(optarg);
+				break;
+			case '?':
+				/* The user specified an invalid option */
+				fprintf(stdout, "Requested arg does not exist!\n");
+				exit(EXIT_FAILURE);
+			case -1:
+				/* Done with options */
+				break;
+
+			default:
+				/* Unexpected things */
+				fprintf(stdout, "I can't handle this arg!\n");
+				exit(EXIT_FAILURE);
+		}
+	} while(next_option != -1);
+
+	return (EXIT_SUCCESS);
+}
+
+
+
+
+int main(int argc, char * const argv[]) {
+	string input;
+	string config;
+	int thread_cnt;
+	if(parse_input(argc, argv, &input, &config, &thread_cnt)){
+		cout << "Could not parse file" << endl;
+		exit(EXIT_FAILURE);
+	}
+	fprintf(stdout, "INPUT: %s\n", input.c_str());
+	fprintf(stdout, "CONFIG: %s\n", config.c_str());
+	fprintf(stdout, "THREADS: %d\n", thread_cnt);
+
 	PoMsa *poMsa;
 	try {
-		poMsa = new PoMsa("m_po_mine.aln");
+		poMsa = new PoMsa(input);
 	}catch (std::string message){
 		std::cerr << message << std::endl;
 		exit(-1);
@@ -25,7 +88,7 @@ int main() {
 	SequenceBundler *bundler = new SequenceBundler();
 	bundler->addInclusionRule(new PercentageMatchSeqRule(1.0, 1.0));
 	
-	HeaviestBundle *hb = new HeaviestBundle(poMsa, 1);
+	HeaviestBundle *hb = new HeaviestBundle(poMsa, thread_cnt);
 	
 	while (true){
 		// pronadi najbolji put
