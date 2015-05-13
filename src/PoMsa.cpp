@@ -32,7 +32,7 @@ PoMsa::PoMsa(std::string filePath) {
 	std::getline(fin, line); // SOURCECOUNT=4
 	this->seqCnt = std::stoi(line.substr(line.find('=', 0) + 1, line.length()));
 
-	std::vector<int> nodeStartIds;
+
 
 	for (int seqId = 0; seqId < this->seqCnt; ++seqId) {
 		std::getline(fin, line); // SOURCENAME=CRKL_HUMAN
@@ -53,7 +53,7 @@ PoMsa::PoMsa(std::string filePath) {
 		std::string title;
 		std::getline(os, title); // remaining is sequence title: CRK-LIKE PROTEIN.
 		this->seqs.push_back(new Seq(seqName, title, nodeCnt, weight));
-		nodeStartIds.push_back(firstNodeId);
+
 				
 
 	}
@@ -90,8 +90,15 @@ PoMsa::PoMsa(std::string filePath) {
 			}
 		}
 		// stvori novi cvor
+
 		Node *node = new Node(nodeId, nucl, seqs, alignedWithNodeIds);
 		this->nodes.push_back(node);
+
+		for(Seq *seq : seqs){
+			if (seq->startNode == nullptr){
+				seq->startNode = node;
+			}
+		}
 
 		// stvori veze prema svim prijasnjim cvorovima
 		std::vector<Link *> *previousLinks = new std::vector<Link *>();
@@ -109,9 +116,6 @@ PoMsa::PoMsa(std::string filePath) {
 			}
 		}
 		
-	}
-	for (int i = 0; i < this->seqs.size(); ++i){
-		this->seqs[i]->setStartNode(this->nodes[nodeStartIds[i]]);
 	}
 
 	fin.close();
