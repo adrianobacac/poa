@@ -18,16 +18,11 @@ public:
 
     virtual ~InternalGapLength();
 
-
     InternalGapLength(int limit);
 
-    virtual void init(Seq *seq, Seq *cons);
+    virtual bool check(Seq *seq, Seq *cons);
 
-    virtual void process(Node *node);
 
-    virtual bool result();
-
-    InternalGapLength *copy();
 
 };
 

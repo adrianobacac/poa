@@ -9,40 +9,61 @@ InternalGapLength::~InternalGapLength() {
 
 }
 
-void InternalGapLength::init(Seq *seq, Seq *cons){
-    this->_seq = seq;
-    this->_cons = cons;
-    this-> _gap_length = 0;
-    this-> _temp_gap_length = 0;
-    this-> _was_first_match = false;
 
-}
-
-void InternalGapLength::process(Node *node){
-    assert(_seq != nullptr && _cons != nullptr && node->hasSeq(this->_seq));
-    if (!node->hasSeq(_cons) && !_was_first_match){
-        return;
-    }else if(node->hasSeq(_cons) && !_was_first_match){
-        _was_first_match = true;
-    }else if(!node->hasSeq(_cons) && _was_first_match){
-        _temp_gap_length++;
-    }else if(node->hasSeq(_cons) && _was_first_match){
-        _gap_length += _temp_gap_length;
-        _temp_gap_length = 0;
-    }
-
-}
-
-bool InternalGapLength::result(){
-    assert(_gap_length >= 0 && _limit >= 0);
-    return _gap_length <= _limit;
-
-}
 
 InternalGapLength::InternalGapLength(int limit):_limit(limit), _gap_length(0), _temp_gap_length(0), _was_first_match(false) {
     assert(limit >= 0);
 }
 
-InternalGapLength *InternalGapLength::copy() {
-    return new InternalGapLength(_limit);
+
+bool InternalGapLength::check(Seq *seq, Seq *cons) {
+    std::list<Node *> nodes;
+    seq->nodes(&nodes);
+    int largest_gap = 0;
+    int temp_cons_gap = 0;
+    int temp_seq_gap = 0;
+    Node *match = nullptr;
+    for(Node *node: nodes){
+        if (!node->hasSeq(cons) && !match){
+            // preskoci sve dok nema nekog zajednickog
+            continue;
+        }
+
+        if (!node->hasSeq(cons) && match){
+            ++temp_seq_gap;
+            continue;
+        }
+
+        if (node->hasSeq(cons)){
+            match = node;
+            if (temp_cons_gap > largest_gap || temp_seq_gap > largest_gap) {
+                largest_gap = temp_cons_gap > temp_seq_gap ? temp_cons_gap : temp_seq_gap;
+            }
+            temp_seq_gap = 0;
+            temp_cons_gap = 0;
+        }
+
+        if  (node->LinkTo(seq) != node->LinkTo(cons) && match){
+
+            // u ovom cvoru se racvaju putevi
+            // pronadi duljinu rupe u konsenzusu
+            if (!node->LinkTo(cons)){
+
+                continue;
+            }
+            Node *cons_node = node->LinkTo(cons)->next;
+            while(cons_node && !cons_node->hasSeq(seq)){
+
+                ++temp_cons_gap;
+                if(cons_node->LinkTo(cons)) {
+                    cons_node = cons_node->LinkTo(cons)->next;
+                }else{
+                    break;
+                }
+            }
+        }
+
+
+    }
+    return largest_gap <= _limit;
 }

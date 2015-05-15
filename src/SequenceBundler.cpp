@@ -22,23 +22,8 @@ void SequenceBundler::removeInclusionRule(InclusionRule  *rule){
 }
 bool SequenceBundler::_applyInsertionRules(Seq *seq, Seq *cons){
 
-
-	std::vector<InclusionRule *> copy_rules;
-	for (InclusionRule *rule_base : this->rules){
-		InclusionRule *rule = rule_base->copy();
-		rule->init(seq, cons);
-		copy_rules.push_back(rule);
-	}
-	std::list<Node *> nodes;
-	seq->nodes(&nodes);
-
-	for (Node *node : nodes){
-		for (InclusionRule *rule : copy_rules){
-			rule->process(node);
-		}
-	}
-	for (InclusionRule *rule : copy_rules){
-		if (!rule->result()){
+	for (InclusionRule *rule : this->rules){
+		if (!rule->check(seq, cons)){
 			return false;
 		}
 	}
@@ -50,8 +35,6 @@ int SequenceBundler::addSequencesToBundle(std::vector<Seq *> *seqs, Seq *consens
 	assert(bundled != nullptr);
 	bundled->clear();
 	int cnt = 0;
-
-
 	std::vector< std::future<int> > results;
 
 	std::mutex *mylock = new std::mutex;

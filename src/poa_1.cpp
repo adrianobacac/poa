@@ -80,6 +80,7 @@ int parse_config(std::string filePath, std::list<InclusionRule *> *rules){
 	}
 	std::string line;
 	while(std::getline(fin, line)){
+
 		InclusionRule *rule = RuleFactory::createRule(line);
 		if (rule){
 			rules->push_back(rule);

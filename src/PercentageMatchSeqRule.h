@@ -11,9 +11,6 @@ public:
 
 	PercentageMatchSeqRule(float lower, float upper);
 	virtual ~PercentageMatchSeqRule();
-	virtual void init(Seq *seq, Seq *cons);
-	virtual void process(Node *node);
-	virtual bool result();
-	PercentageMatchSeqRule *copy();
+	virtual bool check(Seq *seq, Seq *cons);
 };
 

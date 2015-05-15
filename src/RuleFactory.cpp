@@ -18,7 +18,7 @@ InclusionRule *RuleFactory::createRule(std::string line) {
         return new PercentageMatchSeqRule(lower, upper);
 
 
-    }else if (line == "internal_gap_length"){
+    }else if (type == "internal_gap_length"){
         int limit;
         params >> limit;
         return new InternalGapLength(limit);
