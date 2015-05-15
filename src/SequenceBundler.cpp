@@ -1,7 +1,8 @@
 #include "SequenceBundler.h"
 #include <cassert>
-#include <list>
-SequenceBundler::SequenceBundler(){
+
+SequenceBundler::SequenceBundler(ThreadPool *pool):_pool(pool){
+	assert(pool != nullptr);
 }
 
 
@@ -21,19 +22,22 @@ void SequenceBundler::removeInclusionRule(InclusionRule  *rule){
 }
 bool SequenceBundler::_applyInsertionRules(Seq *seq, Seq *cons){
 
-	for (InclusionRule *rule : this->rules){
-		
-		rule->preprocess(seq, cons);
+
+	std::vector<InclusionRule *> copy_rules;
+	for (InclusionRule *rule_base : this->rules){
+		InclusionRule *rule = rule_base->copy();
+		rule->init(seq, cons);
+		copy_rules.push_back(rule);
 	}
 	std::list<Node *> nodes;
 	seq->nodes(&nodes);
 
 	for (Node *node : nodes){
-		for (InclusionRule *rule : this->rules){
+		for (InclusionRule *rule : copy_rules){
 			rule->process(node);
 		}
 	}
-	for (InclusionRule *rule : this->rules){
+	for (InclusionRule *rule : copy_rules){
 		if (!rule->result()){
 			return false;
 		}
@@ -46,20 +50,47 @@ int SequenceBundler::addSequencesToBundle(std::vector<Seq *> *seqs, Seq *consens
 	assert(bundled != nullptr);
 	bundled->clear();
 	int cnt = 0;
+
+
+	std::vector< std::future<int> > results;
+
+	std::mutex *mylock = new std::mutex;
 	for (Seq *seq : *seqs){
 		if (seq->consensus == nullptr){
 			std::cout << "provjeram za: " << seq->name << std::endl;
+
+			results.emplace_back(
+					_pool->enqueue([this, seq, consensus, bundled, mylock] {
+						if (_applyInsertionRules(seq, consensus)){
+							seq->consensus = consensus;
+							mylock->lock();
+							bundled->push_back(seq);
+							mylock->unlock();
+							//seq->rescaleWeight(0);
+							//std::cout << seq->name <<"da" << std::endl;
+							return 1;
+						}
+						return 0;
+					})
+			);
+
 		}
+		/*
 		if (seq->consensus == nullptr && _applyInsertionRules(seq, consensus)){
 			seq->consensus = consensus;
 			cnt++;
 			bundled->push_back(seq);
 			std::cout << "da" << std::endl;
 
-		}
+		}*/
+
 	}
+	/*
 	if (bundled->empty()){
 		return 0;
+	} */
+	for(auto && result: results) {
+		cnt += result.get();
 	}
 	return cnt;
 }

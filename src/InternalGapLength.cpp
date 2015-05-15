@@ -9,7 +9,7 @@ InternalGapLength::~InternalGapLength() {
 
 }
 
-void InternalGapLength::preprocess(Seq *seq, Seq *cons){
+void InternalGapLength::init(Seq *seq, Seq *cons){
     this->_seq = seq;
     this->_cons = cons;
     this-> _gap_length = 0;
@@ -41,4 +41,8 @@ bool InternalGapLength::result(){
 
 InternalGapLength::InternalGapLength(int limit):_limit(limit), _gap_length(0), _temp_gap_length(0), _was_first_match(false) {
     assert(limit >= 0);
+}
+
+InternalGapLength *InternalGapLength::copy() {
+    return new InternalGapLength(_limit);
 }

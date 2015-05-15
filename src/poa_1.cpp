@@ -11,6 +11,11 @@
 #include <string.h>
 
 
+#include <vector>
+#include <chrono>
+
+#include "ThreadPool.h"
+
 #include "PoMsa.h"
 #include "HeaviestBundle.h"
 #include "SequenceBundler.h"
@@ -65,8 +70,6 @@ int parse_input(int argc, char * const argv[], string *input, string *conf, int 
 }
 
 
-
-
 int main(int argc, char * const argv[]) {
 
 	string input;
@@ -87,7 +90,10 @@ int main(int argc, char * const argv[]) {
 		std::cerr << message << std::endl;
 		exit(-1);
 	}
-	SequenceBundler *bundler = new SequenceBundler();
+	ThreadPool pool((size_t)thread_cnt);
+	SequenceBundler *bundler = new SequenceBundler(&pool);
+
+
 	bundler->addInclusionRule(new PercentageMatchSeqRule(1.0, 1.0));
 	
 	HeaviestBundle *hb = new HeaviestBundle(poMsa, thread_cnt);

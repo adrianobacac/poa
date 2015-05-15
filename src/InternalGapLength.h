@@ -21,11 +21,13 @@ public:
 
     InternalGapLength(int limit);
 
-    virtual void preprocess(Seq *seq, Seq *cons);
+    virtual void init(Seq *seq, Seq *cons);
 
     virtual void process(Node *node);
 
     virtual bool result();
+
+    InternalGapLength *copy();
 
 };
 

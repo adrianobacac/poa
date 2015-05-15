@@ -2,6 +2,7 @@
 #include "Seq.h"
 #include "Node.h"
 #include "PoMsa.h"
+#include "ThreadPool.h"
 
 #include <vector>
 #include <set>
@@ -9,10 +10,10 @@
 class SequenceBundler
 {
 public:
-	PoMsa *_pomsa;
+	ThreadPool *_pool;
 	std::set<InclusionRule *> rules;
 	
-	SequenceBundler();
+	SequenceBundler(ThreadPool *pool);
 	
 	virtual ~SequenceBundler();
 

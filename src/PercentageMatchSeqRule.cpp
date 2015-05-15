@@ -10,7 +10,7 @@ PercentageMatchSeqRule::~PercentageMatchSeqRule(){
 }
 
 
-void PercentageMatchSeqRule::preprocess(Seq *seq, Seq*cons){
+void PercentageMatchSeqRule::init(Seq *seq, Seq *cons){
 	this->_seq = seq;
 	this->_cons = cons;
 	this->_shared_cnt = 0;
@@ -29,5 +29,9 @@ bool PercentageMatchSeqRule::result(){
 	assert(_seq != nullptr && _cons != nullptr);
 	float perc = float(_shared_cnt)  / _seq->nodeCnt;
 	return _lower <= perc && perc <= _upper;
+}
+
+PercentageMatchSeqRule *PercentageMatchSeqRule::copy() {
+	return new PercentageMatchSeqRule(_lower, _upper);
 }
 
