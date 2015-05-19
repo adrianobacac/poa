@@ -21,7 +21,7 @@ void SequenceBundler::removeInclusionRule(InclusionRule  *rule){
 	}
 }
 bool SequenceBundler::_applyInsertionRules(Seq *seq, Seq *cons){
-
+	assert(seq!= nullptr && cons != nullptr);
 	for (InclusionRule *rule : this->rules){
 		if (!rule->check(seq, cons)){
 			return false;
@@ -40,10 +40,10 @@ int SequenceBundler::addSequencesToBundle(std::vector<Seq *> *seqs, Seq *consens
 	std::mutex *mylock = new std::mutex;
 	for (Seq *seq : *seqs){
 		if (seq->consensus == nullptr){
-			std::cout << "provjeram za: " << seq->name << std::endl;
 
 			results.emplace_back(
 					_pool->enqueue([this, seq, consensus, bundled, mylock] {
+						// std::cout << "provjeram za: " << seq->name << std::endl;
 						if (_applyInsertionRules(seq, consensus)){
 							seq->consensus = consensus;
 							mylock->lock();
@@ -59,19 +59,20 @@ int SequenceBundler::addSequencesToBundle(std::vector<Seq *> *seqs, Seq *consens
 
 		}
 		/*
-		if (seq->consensus == nullptr && _applyInsertionRules(seq, consensus)){
+		if (seq->consensus != nullptr){
+			continue;
+		}
+		std::cout << "provjeram za: " << seq->name << std::endl;
+		if(_applyInsertionRules(seq, consensus)){
 			seq->consensus = consensus;
 			cnt++;
 			bundled->push_back(seq);
 			std::cout << "da" << std::endl;
 
-		}*/
+		}
+		 */
 
 	}
-	/*
-	if (bundled->empty()){
-		return 0;
-	} */
 	for(auto && result: results) {
 		cnt += result.get();
 	}

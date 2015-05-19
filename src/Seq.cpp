@@ -9,7 +9,7 @@
 #include <cassert>
 
 Seq::Seq(std::string name, std::string title, int nodeCnt,
-		int weight):name(name), title(title), nodeCnt(nodeCnt), weight(weight), consensus(nullptr) {
+		int weight):name(name), title(title), nodeCnt(nodeCnt), weight(weight), consensus(nullptr), startNode(nullptr) {
 }
 
 void Seq::rescaleWeight(int factor) {
@@ -27,11 +27,12 @@ void Seq::nodes(std::list<Node *> *nodeList){
 	nodeList->clear();
 	Node *node = this->startNode;
 	nodeList->push_back(node);
-	Link *link;
 
-	while (link = node->LinkTo(this)){
+	Link *link = node->LinkTo(this);
+	while (link){
 		node = link->next;
 		nodeList->push_back(node);
+		link = node->LinkTo(this);
 	}
 	
 

@@ -21,6 +21,7 @@ class Node {
 public:
 	int index;
 
+    int _times_visited;
     std::vector<Link *> previous;
     std::vector<Link *> next;
 

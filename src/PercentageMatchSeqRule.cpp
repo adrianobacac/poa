@@ -10,6 +10,7 @@ PercentageMatchSeqRule::~PercentageMatchSeqRule(){
 }
 
 bool PercentageMatchSeqRule::check(Seq *seq, Seq *cons) {
+	assert(seq!= nullptr && cons != nullptr);
 	std::list<Node *> nodes;
 	seq->nodes(&nodes);
 	int with_cons_cnt = 0;

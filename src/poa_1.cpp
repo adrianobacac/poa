@@ -19,8 +19,9 @@
 #include "PoMsa.h"
 #include "HeaviestBundle.h"
 #include "SequenceBundler.h"
-#include "PercentageMatchSeqRule.h"
 #include "RuleFactory.h"
+#include "OutputFormater.h"
+#include "FastaOutputFormater.h"
 
 using namespace std;
 
@@ -108,6 +109,7 @@ int main(int argc, char * const argv[]) {
 		std::cerr << message << std::endl;
 		exit(-1);
 	}
+	poMsa->drawGraph("graph_start");
 	std::list<InclusionRule *> *rules = new std::list<InclusionRule *>;
 
 	try {
@@ -134,30 +136,34 @@ int main(int argc, char * const argv[]) {
 		// gotovo nalazenje najboljeg puta
 
 		// stvori novu sekvencu
-		Seq *new_consensus = new Seq("name", "> title", bestPath.size(), 0);
+		Seq *new_consensus = new Seq("consensus", "", bestPath.size(), 0);
 		poMsa->cons.push_back(new_consensus);
 		poMsa->createSeqOnPath(new_consensus, bestPath);
+		new_consensus->setStartNode(bestPath[0]);
 		poMsa->drawGraph("graph" + to_string(unbunbled_seq_cnt));
 
 		for (Node *node : bestPath) {
-			std::cout << node->nucl << " -> ";
+			std::cout << node->nucl;
 		}
 		std::cout << std::endl;
 
 		// gotovo stvaranje nove sekvence
 
 		// pronadi slicne sekvence
+
+
 		std::vector<Seq *> *bundle = new std::vector < Seq * > ;
 		int seqs_bundled = bundler->addSequencesToBundle(&poMsa->seqs, new_consensus, bundle);
 		unbunbled_seq_cnt -= seqs_bundled;
+		new_consensus->title = to_string(seqs_bundled);
 		if (seqs_bundled > 0){
-			std::cout << "pronasao slicne sekvence" << std::endl;
+			std::cout << "pronasao slicnih sekvenci: " << seqs_bundled << std::endl;
 
 			for (Seq *seq : *bundle){
 				seq->rescaleWeight(0);
-				std::cout << seq->name << std::endl;
+				// std::cout << seq->name << std::endl;
 			}
-			std::cout << "-----------------" << std::endl;
+			// std::cout << "-----------------" << std::endl;
 		}
 		else{
 			std::cout << "nisam pronasao slicne sekvence" << std::endl;
@@ -166,6 +172,7 @@ int main(int argc, char * const argv[]) {
 		}
 		//std::getchar();
 	}
-
+	OutputFormater *output = new FastaOutputFormater();
+	output->format("out.fa", poMsa);
 	return 0;
 }

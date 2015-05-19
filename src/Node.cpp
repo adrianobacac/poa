@@ -9,7 +9,7 @@
 
 Node::Node(int index, char nucl, std::set<Seq *> seqs, std::set<int> alnNodesId) :
 		index(index), nucl(nucl), seqs(seqs), alignedWithNodeIds(alnNodesId)
-, score(0), bestPrevious(nullptr) {
+, score(0), bestPrevious(nullptr), _times_visited(0) {
 }
 
 void Node::addToNext(Link* next) {

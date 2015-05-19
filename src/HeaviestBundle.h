@@ -27,7 +27,6 @@ public:
 
     std::queue<Node*> _toProcess;
 
-    std::set<Node*> _threadEndPoints;
 
     /**
      * Processes branch to find local top score.

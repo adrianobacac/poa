@@ -17,7 +17,9 @@ InternalGapLength::InternalGapLength(int limit):_limit(limit), _gap_length(0), _
 
 
 bool InternalGapLength::check(Seq *seq, Seq *cons) {
+    assert(seq!= nullptr && cons != nullptr);
     std::list<Node *> nodes;
+
     seq->nodes(&nodes);
     int largest_gap = 0;
     int temp_cons_gap = 0;
@@ -65,5 +67,6 @@ bool InternalGapLength::check(Seq *seq, Seq *cons) {
 
 
     }
+
     return largest_gap <= _limit;
 }

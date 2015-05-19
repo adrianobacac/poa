@@ -14,35 +14,20 @@ void HeaviestBundle::processBranch(Node *start) {
 	if (start->previous.empty()) {
 		//start->score = 0;
 	}
-	Node *beforeCurrent = nullptr; // za oznaku kraja dretve pamtimo gdje je zadnje bila
-	bool forbiddenEntry = false;
 	Node *current = start;
 
 	
 	while (true) {
+
 		if (current->previous.size() > 1) {
-
-			// provjeri ako su svi prijasnji vec obradeni
-			unsigned int closed = 0;
-			for (Link *previousLink : current->previous) {
-				// SYNC zbog provjere obradenih
-				if (this->_threadEndPoints.find(previousLink->previous)
-						!= this->_threadEndPoints.end()) {
-					closed++;
-				}
-
-			}
-			if (closed < (current->previous.size() - 1)) { // -1 jer je ova dretva dosla iz jednog
-				// prijasnji nisu obradeni, umri
-				this->_threadEndPoints.insert(beforeCurrent);
-				// END SYNC
-				forbiddenEntry = true;
+			current->_times_visited++;
+			if(current->_times_visited != current->previous.size()){
 				break;
-			}else{
-				// END SYNC
 			}
 
 		}
+		// reset for next round
+		current->_times_visited = 0;
 		if (current->previous.size() > 0) {
 
 			// trazimo najbolji prijasnji
@@ -69,18 +54,19 @@ void HeaviestBundle::processBranch(Node *start) {
 			}
 		}
 
+
 		if (current->next.size() > 1) {
+			// std::cout << "multiple next: "<<current->nucl <<std::endl;
 			// SYNC zbog pristupa toProcess, treba probudit main
 			for (unsigned int i = 1; i < current->next.size(); ++i) {
-				
 				this->_toProcess.push(current->next[i]->next);
 			}
 			// END SYNC
 		}
 		if (current->next.empty()) {
+			this->_ends.push_back(current);
 			break;
 		}
-		beforeCurrent = current;
 		current = current->next[0]->next;
 
 	}
@@ -89,10 +75,6 @@ void HeaviestBundle::processBranch(Node *start) {
 		this->_topScoringNode = localMaxScorer;
 	} else if (localMaxScorer->score > this->_topScoringNode->score) {
 		this->_topScoringNode = localMaxScorer;
-	}
-	if(!forbiddenEntry){
-		this->_threadEndPoints.insert(current);
-
 	}
 	// END SYNC
 }
@@ -116,12 +98,10 @@ HeaviestBundle::HeaviestBundle(PoMsa *poMsa, int maxThreadCount) :
 	_ends(std::vector<Node *>()),
 	_activeThreadCount(0),
 	_maxThreadCount(maxThreadCount),
-	_toProcess(std::queue<Node *>()),
-	_threadEndPoints(std::set<Node *>()){
+	_toProcess(std::queue<Node *>()){
 }
 
 std::vector<Node *> HeaviestBundle::findTopScoringPath() {
-
 	for (Node* start : this->_poMsa->getStarts()) {
 		this->_toProcess.push(start);
 	}
@@ -134,7 +114,7 @@ std::vector<Node *> HeaviestBundle::findTopScoringPath() {
 			this->processBranch(localStart);
 		}
 	}
-	
+
 	return this->branchCompletion(this->_topScoringNode)->traceback();
 }
 
