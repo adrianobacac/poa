@@ -35,12 +35,14 @@ public:
 
     std::vector<Node *> nodes;
     std::vector<Seq *> seqs;
-    std::vector<int> ungroupedSeqIndex;
 
     std::vector<Seq * >cons;
 
     PoMsa(std::string filePath);
-    void createSeqOnPath(Seq *seq, std::vector<Node *> path);
+
+    virtual ~PoMsa();
+
+    void createSeqOnPath(Seq *seq, std::list<Node *> path);
 
     std::vector<Node *> getStarts();
 

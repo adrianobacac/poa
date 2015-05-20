@@ -40,6 +40,9 @@ bool InternalGapLength::check(Seq *seq, Seq *cons) {
             match = node;
             if (temp_cons_gap > largest_gap || temp_seq_gap > largest_gap) {
                 largest_gap = temp_cons_gap > temp_seq_gap ? temp_cons_gap : temp_seq_gap;
+                if (largest_gap > _limit){
+                    return false;
+                }
             }
             temp_seq_gap = 0;
             temp_cons_gap = 0;

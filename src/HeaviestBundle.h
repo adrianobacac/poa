@@ -53,7 +53,7 @@ public:
     /**
      * Finds path containing best scoring node.
      */
-    std::vector<Node *> findTopScoringPath();
+    std::list<Node *> findTopScoringPath();
 
     Node *getTopScoringNode();
 };

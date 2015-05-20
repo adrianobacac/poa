@@ -101,7 +101,7 @@ HeaviestBundle::HeaviestBundle(PoMsa *poMsa, int maxThreadCount) :
 	_toProcess(std::queue<Node *>()){
 }
 
-std::vector<Node *> HeaviestBundle::findTopScoringPath() {
+std::list<Node *> HeaviestBundle::findTopScoringPath() {
 	for (Node* start : this->_poMsa->getStarts()) {
 		this->_toProcess.push(start);
 	}

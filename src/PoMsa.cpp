@@ -122,7 +122,7 @@ PoMsa::PoMsa(std::string filePath) {
 
 }
 
-void PoMsa::createSeqOnPath(Seq* seq, std::vector<Node*> path) {
+void PoMsa::createSeqOnPath(Seq* seq, std::list<Node*> path) {
 	Node *previous_node = nullptr;
 	for (Node *node : path) {
 		node->addSeq(seq);
@@ -161,4 +161,16 @@ void PoMsa::drawGraph(std::string name) {
 	fout << "}" << std::endl;
 	fout.close();
 
+}
+
+PoMsa::~PoMsa() {
+	for(Node *node:nodes){
+		delete node;
+	}
+	for(Seq *seq:seqs){
+		delete seq;
+	}
+	for(Seq *con: cons){
+		delete con;
+	}
 }

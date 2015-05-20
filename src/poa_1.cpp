@@ -110,10 +110,10 @@ int main(int argc, char * const argv[]) {
 		exit(-1);
 	}
 	poMsa->drawGraph("graph_start");
-	std::list<InclusionRule *> *rules = new std::list<InclusionRule *>;
+	std::list<InclusionRule *> rules;
 
 	try {
-		parse_config(config, rules);
+		parse_config(config, &rules);
 	}catch (std::string message){
 		std::cerr << message << std::endl;
 		exit(-1);
@@ -122,7 +122,7 @@ int main(int argc, char * const argv[]) {
 	ThreadPool pool((size_t)thread_cnt);
 	SequenceBundler *bundler = new SequenceBundler(&pool);
 
-	for(InclusionRule *rule : *rules){
+	for(InclusionRule *rule : rules){
 		bundler->addInclusionRule(rule);
 	}
 
@@ -131,7 +131,7 @@ int main(int argc, char * const argv[]) {
 	unsigned long unbunbled_seq_cnt = poMsa->seqs.size();
 	while (unbunbled_seq_cnt){
 		// pronadi najbolji put
-		std::vector<Node *> bestPath;
+		std::list<Node *> bestPath;
 		bestPath = hb->findTopScoringPath();
 		// gotovo nalazenje najboljeg puta
 
@@ -139,12 +139,14 @@ int main(int argc, char * const argv[]) {
 		Seq *new_consensus = new Seq("consensus", "", bestPath.size(), 0);
 		poMsa->cons.push_back(new_consensus);
 		poMsa->createSeqOnPath(new_consensus, bestPath);
-		new_consensus->setStartNode(bestPath[0]);
+		new_consensus->setStartNode(bestPath.front());
 		poMsa->drawGraph("graph" + to_string(unbunbled_seq_cnt));
 
+		/*
 		for (Node *node : bestPath) {
 			std::cout << node->nucl;
 		}
+		 */
 		std::cout << std::endl;
 
 		// gotovo stvaranje nove sekvence
@@ -152,14 +154,14 @@ int main(int argc, char * const argv[]) {
 		// pronadi slicne sekvence
 
 
-		std::vector<Seq *> *bundle = new std::vector < Seq * > ;
-		int seqs_bundled = bundler->addSequencesToBundle(&poMsa->seqs, new_consensus, bundle);
+		std::vector<Seq *> bundle;
+		int seqs_bundled = bundler->addSequencesToBundle(&poMsa->seqs, new_consensus, &bundle);
 		unbunbled_seq_cnt -= seqs_bundled;
 		new_consensus->title = to_string(seqs_bundled);
 		if (seqs_bundled > 0){
 			std::cout << "pronasao slicnih sekvenci: " << seqs_bundled << std::endl;
 
-			for (Seq *seq : *bundle){
+			for (Seq *seq : bundle){
 				seq->rescaleWeight(0);
 				// std::cout << seq->name << std::endl;
 			}
@@ -174,5 +176,10 @@ int main(int argc, char * const argv[]) {
 	}
 	OutputFormater *output = new FastaOutputFormater();
 	output->format("out.fa", poMsa);
+
+	for (InclusionRule *rule : rules){
+		delete rule;
+	}
+	delete output;
 	return 0;
 }

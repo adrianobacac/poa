@@ -20,8 +20,8 @@ void Node::addSeq(Seq *seq){
 	this->seqs.insert(seq);
 }
 
-std::vector<Node*> Node::traceback() {
-	std::vector<Node *> *path = new std::vector<Node *>();
+std::list<Node*> Node::traceback() {
+	std::list<Node *> *path = new std::list<Node *>();
 	Node *node = this;
 	while (node) {
 		path->insert(path->begin(), node);
@@ -56,4 +56,10 @@ Link *Node::LinkTo(Node *queryNode){
 		}
 	}
 	return nullptr;
+}
+
+Node::~Node() {
+	for (Link *link : next){
+		delete link;
+	}
 }

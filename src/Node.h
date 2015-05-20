@@ -34,6 +34,9 @@ public:
     int score;
 
     Node(int index, char nucl, std::set<Seq *>seqs, std::set<int> alnNodesId);
+
+    virtual ~Node();
+
     /**
 	 * Adds Node to list of next nodes.
 	 * @param next Node to add.
@@ -46,7 +49,7 @@ public:
      * Follow best previous nodes to create path.
      * @return Best path to this node.
      */
-    std::vector<Node *> traceback();
+    std::list<Node *> traceback();
 
 	bool hasSeq(Seq *seq);
 
