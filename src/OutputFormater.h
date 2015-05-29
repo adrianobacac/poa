@@ -7,11 +7,11 @@
 
 #include <string.h>
 #include <iostream>
-#include "PoMsa.h"
+#include "Graph.h"
 
 class OutputFormater {
 public:
-    virtual void format(std::string file_path, PoMsa *poMsa)=0;
+    virtual void format(std::string file_path, Graph *poMsa)=0;
 };
 
 

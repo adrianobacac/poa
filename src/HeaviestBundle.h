@@ -12,12 +12,12 @@
 #include <algorithm>
 #include <iterator>
 #include <iostream>
-#include "PoMsa.h"
+#include "Graph.h"
 
 class HeaviestBundle {
 
 public:
-    PoMsa *_poMsa;
+    Graph *_poMsa;
 
     Node *_topScoringNode;
     std::vector<Node*> _ends;
@@ -49,7 +49,7 @@ public:
 
 
 
-    HeaviestBundle(PoMsa *poMsa, int maxTreadCount);
+    HeaviestBundle(Graph *poMsa, int maxTreadCount);
     /**
      * Finds path containing best scoring node.
      */

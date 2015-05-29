@@ -92,7 +92,7 @@ Node *HeaviestBundle::branchCompletion(Node *topScoringNode) {
 	return this->_topScoringNode;
 }
 
-HeaviestBundle::HeaviestBundle(PoMsa *poMsa, int maxThreadCount) :
+HeaviestBundle::HeaviestBundle(Graph *poMsa, int maxThreadCount) :
 	_poMsa(poMsa),
 	_topScoringNode(nullptr),
 	_ends(std::vector<Node *>()),

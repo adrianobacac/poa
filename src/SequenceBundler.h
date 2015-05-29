@@ -1,7 +1,7 @@
 #include "InclusionRule.h"
 #include "Seq.h"
 #include "Node.h"
-#include "PoMsa.h"
+#include "Graph.h"
 #include "ThreadPool.h"
 
 #include <vector>

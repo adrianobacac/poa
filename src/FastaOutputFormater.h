@@ -9,7 +9,7 @@
 #include "OutputFormater.h"
 
 class FastaOutputFormater:public OutputFormater {
-    void format(std::string file_path, PoMsa *poMsa);
+    void format(std::string file_path, Graph *poMsa);
 };
 
 

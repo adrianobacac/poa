@@ -4,7 +4,7 @@
 
 #include "FastaOutputFormater.h"
 
-void FastaOutputFormater::format(std::string file_path, PoMsa *poMsa) {
+void FastaOutputFormater::format(std::string file_path, Graph *poMsa) {
     std::ofstream outfile (file_path);
     for(Seq *cons : poMsa->cons){
         outfile << ">" << cons->name << "_" << cons->title << std::endl;

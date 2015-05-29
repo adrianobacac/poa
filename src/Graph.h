@@ -22,7 +22,7 @@
 #include "Seq.h"
 #include "Link.h"
 
-class PoMsa {
+class Graph {
 public:
     std::string version;
     std::string name;
@@ -38,9 +38,9 @@ public:
 
     std::vector<Seq * >cons;
 
-    PoMsa(std::string filePath);
+    Graph();
 
-    virtual ~PoMsa();
+    virtual ~Graph();
 
     void createSeqOnPath(Seq *seq, std::list<Node *> path);
 

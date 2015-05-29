@@ -16,29 +16,31 @@
 
 #include "ThreadPool.h"
 
-#include "PoMsa.h"
+#include "Graph.h"
 #include "HeaviestBundle.h"
 #include "SequenceBundler.h"
 #include "RuleFactory.h"
 #include "OutputFormater.h"
 #include "FastaOutputFormater.h"
+#include "GraphFactory.h"
 
 using namespace std;
 
-int parse_input(int argc, char * const argv[], string *input, string *conf, int *thread_count) {
+int parse_input(int argc, char * const argv[], string *input, string *conf, int *thread_count, int *limit) {
 	// default values
 	*input = "in.po";
 	*conf = "config.txt";
 	*thread_count = 1;
-
+    *limit = -1;
 	int next_option;
 	/* String of short options */
-	const char *short_options = "t:i:c:";
+	const char *short_options = "t:i:c:l:";
 	/* The array of long options */
 	const struct option long_options[] = {
 			{ "input",  1, NULL, 'i' },
 			{ "config", 1, NULL, 'c' },
-			{ "threads", 1, NULL, 't'}
+            { "threads", 1, NULL, 't'},
+            { "limit", 1, NULL, 'l'}
 	};
 
 	do {
@@ -51,9 +53,12 @@ int parse_input(int argc, char * const argv[], string *input, string *conf, int 
 			case 'c':
 				*conf = optarg;
 				break;
-			case 't':
-				*thread_count =  atoi(optarg);
-				break;
+            case 't':
+                *thread_count =  atoi(optarg);
+                break;
+            case 'l':
+                *limit =  atoi(optarg);
+                break;
 			case '?':
 				/* The user specified an invalid option */
 				fprintf(stdout, "Requested arg does not exist!\n");
@@ -94,21 +99,26 @@ int main(int argc, char * const argv[]) {
 	string input;
 	string config;
 	int thread_cnt;
-	if(parse_input(argc, argv, &input, &config, &thread_cnt)){
+    int limit;
+	if(parse_input(argc, argv, &input, &config, &thread_cnt, &limit)){
 		cout << "Could not parse file" << endl;
 		exit(EXIT_FAILURE);
 	}
 	fprintf(stdout, "INPUT: %s\n", input.c_str());
 	fprintf(stdout, "CONFIG: %s\n", config.c_str());
-	fprintf(stdout, "THREADS: %d\n", thread_cnt);
+    fprintf(stdout, "THREADS: %d\n", thread_cnt);
+    fprintf(stdout, "LIMIT: %d\n", limit);
 
-	PoMsa *poMsa;
+	GraphFactory graphFactory;
+	Graph *poMsa;
 	try {
-		poMsa = new PoMsa(input);
+        poMsa = graphFactory.create(input);
+		//poMsa = new Graph(input);
 	}catch (std::string message){
 		std::cerr << message << std::endl;
 		exit(-1);
 	}
+
 	poMsa->drawGraph("graph_start");
 	std::list<InclusionRule *> rules;
 
@@ -129,7 +139,8 @@ int main(int argc, char * const argv[]) {
 	HeaviestBundle *hb = new HeaviestBundle(poMsa, thread_cnt);
 
 	unsigned long unbunbled_seq_cnt = poMsa->seqs.size();
-	while (unbunbled_seq_cnt){
+	while (unbunbled_seq_cnt && limit != 0){
+        limit--;
 		// pronadi najbolji put
 		std::list<Node *> bestPath;
 		bestPath = hb->findTopScoringPath();

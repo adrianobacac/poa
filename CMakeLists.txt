@@ -12,4 +12,4 @@ file(GLOB SOURCE_FILES
 )
 
 set(MAIN src/poa_1.cpp)
-add_executable(poa ${MAIN} ${SOURCE_FILES} src/OutputFormater.cpp src/OutputFormater.h src/FastaOutputFormater.cpp src/FastaOutputFormater.h)
+add_executable(poa ${MAIN} ${SOURCE_FILES} src/OutputFormater.cpp src/OutputFormater.h src/FastaOutputFormater.cpp src/FastaOutputFormater.h src/GraphFactory.cpp src/GraphFactory.h src/PoGraphCreator.cpp src/PoGraphCreator.h)
