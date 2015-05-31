@@ -2,6 +2,8 @@
 // Created by ppx on 29.05.15..
 //
 
+#include <fstream>
+#include <sstream>
 #include "PoGraphCreator.h"
 
 Graph *PoGraphCreator::create(std::string filePath) {

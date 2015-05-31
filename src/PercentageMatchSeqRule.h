@@ -1,4 +1,8 @@
 #pragma once
+
+#ifndef POA_PERCENTAGEMATCHSEQRULE_H
+#define POA_PERCENTAGEMATCHSEQRULE_H
+
 #include "InclusionRule.h"
 #
 class PercentageMatchSeqRule :
@@ -14,3 +18,4 @@ public:
 	virtual bool check(Seq *seq, Seq *cons);
 };
 
+#endif

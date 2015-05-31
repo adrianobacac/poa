@@ -2,6 +2,7 @@
 // Created by ppx on 17.05.15..
 //
 
+#include <fstream>
 #include "FastaOutputFormater.h"
 
 void FastaOutputFormater::format(std::string file_path, Graph *poMsa) {

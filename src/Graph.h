@@ -4,19 +4,13 @@
  *  Created on: Apr 2, 2015
  *      Author: ppx10
  */
-#include <vector>
+#ifndef POA_GRAPH_H_
+#define POA_GRAPH_H_
 
-#ifndef POMSA_H_
-#define POMSA_H_
-
-#include <string>
 #include <vector>
 #include <set>
-
 #include <string>
-#include <fstream>
 #include <iostream>
-#include <sstream>
 
 #include "Node.h"
 #include "Seq.h"
@@ -50,4 +44,4 @@ public:
     void drawGraph(std::string path);
 };
 
-#endif /* POMSA_H_ */
+#endif /* POA_GRAPH_H */

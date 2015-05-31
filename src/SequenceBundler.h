@@ -1,3 +1,6 @@
+#ifndef POA_SEQUENCEBUNDLER_H_
+#define POA_SEQUENCEBUNDLER_H_
+
 #include "InclusionRule.h"
 #include "Seq.h"
 #include "Node.h"
@@ -23,3 +26,5 @@ public:
 	int addSequencesToBundle(std::vector<Seq *> *seqs, Seq *consensus, std::vector<Seq *> *bundled);
 	bool _applyInsertionRules(Seq *seq, Seq *cons);
 };
+
+#endif // POA_SEQUENCEBUNDLER_H_

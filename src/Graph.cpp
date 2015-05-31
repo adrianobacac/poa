@@ -4,9 +4,12 @@
  *  Created on: Apr 2, 2015
  *      Author: ppx10
  */
-
-#include <vector>
 #include "Graph.h"
+
+
+#include <fstream>
+#include <sstream>
+
 Graph::Graph():nodeCnt(0), seqCnt(0){
 
 }
