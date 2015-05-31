@@ -122,7 +122,7 @@ int main(int argc, char *const argv[]) {
   OutputFormater *output = new FastaOutputFormater();
 
   Conpoa conpoa(poMsa, bundler);
-  conpoa.GenerateConsesuses(limit, thread_cnt, output);
+  conpoa.GenerateConsesuses(limit, output);
 
   delete bundler;
   delete poMsa;

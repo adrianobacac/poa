@@ -1,9 +1,11 @@
-/*
- * Node.h
- *
- *  Created on: Apr 2, 2015
- *      Author: ppx10
- */
+//
+// Created by Adriano Bacac on 02.04.15.
+//
+// Representation of a single node in a
+// partial order multiple sequence alignment graph.
+//
+// Must be constructed alongside Graph with GraphFactory using supported formats.
+//
 
 #ifndef NODE_H_
 #define NODE_H_
@@ -22,9 +24,10 @@ class Node {
 
 public:
   int index_;
-
   int times_visited_;
 
+  char nucl_;
+  int score_;
   std::vector<Link *> entry_links_;
   std::vector<Link *> exit_links_;
 
@@ -32,10 +35,8 @@ public:
 
 
   std::set<Seq *> seqs_;
-
-  char nucl_;
   Node *best_previous_;
-  int score_;
+
 
   const std::set<Seq *> &seqs() const { return seqs_; }
 
@@ -66,28 +67,25 @@ public:
   const std::vector<Link *> &exit_links() const { return exit_links_; }
 
   void set_exit_links(
-      const std::vector<Link *> &exit_links) { Node::exit_links_ = exit_links; }
+      std::vector<Link *> &exit_links) { Node::exit_links_ = exit_links; }
 
 
   Node(int index, char nucl, std::set<Seq *> seqs, std::set<int> aln_nodes_id2);
 
   virtual ~Node();
 
-  /**
- * Adds Node to list of next nodes.
- * @param next Node to add.
- */
-  void AddExitLink(Link *next);
+  // Adds new exit link to list of exit links.
+  void AddExitLink(Link *out);
 
 
   void AddSeq(Seq *seq);
 
   bool HasSeq(Seq *seq);
 
-  /**
-   * Follow best previous nodes to Create path.
-   * @return Best path to this node.
-   */
+  //
+  // Follow best previous nodes to create path.
+  // Ends on node with no best previous node.
+  //
   std::list<Node *> Traceback();
 
 

@@ -11,7 +11,7 @@ Conpoa::Conpoa(Graph *poMsa, SequenceBundler *bundler) : graph_(poMsa),
 }
 
 
-int Conpoa::GenerateConsesuses(int limit, int thread_cnt,
+int Conpoa::GenerateConsesuses(int limit,
                                OutputFormater *output) {
 
   HeaviestBundle *hb = new HeaviestBundle(graph_);
