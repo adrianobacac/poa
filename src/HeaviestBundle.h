@@ -17,45 +17,40 @@
 class HeaviestBundle {
 
 public:
-    Graph *_poMsa;
+  Graph *graph_;
 
-    Node *_topScoringNode;
-    std::vector<Node*> _ends;
-
-    int _activeThreadCount;
-    int _maxThreadCount;
-
-    std::queue<Node*> _toProcess;
+  Node *top_scoring_node_;
+  std::vector<Node *> ends_;
+  std::queue<Node *> to_process_;
 
 
-    /**
-     * Processes branch to find local top score.
-     * Branch is a set of Nodes that can be processed in a single run, meaning all of their predecessors have been analyzed.
-     *
-     * If a node is an end node adds it to ends.
-     * Changes top scoring node if better node found.
-     *
-     * @param start_ Node to start_ from.
-     */
-    void processBranch(Node *start);
+  /**
+   * Processes branch to find local top score.
+   * Branch is a set of Nodes that can be processed in a single run, meaning all of their predecessors have been analyzed.
+   *
+   * If a node is an end node adds it to ends.
+   * Changes top scoring node if better node found.
+   *
+   * @param start_ Node to start_ from.
+   */
+  void ProcessBranch(Node *start);
 
-    /**
-     * Sets a new top scoring node that is an end node if the top scorer is not an end node.
-     *
-     * @param topScoringNode Top scoring node.
-     * @return Top scoring end node.
-     */
-	Node *branchCompletion(Node *topScoringNode);
+  /**
+   * Sets a new top scoring node that is an end node if the top scorer is not an end node.
+   *
+   * @param topScoringNode Top scoring node.
+   * @return Top scoring end node.
+   */
+  Node *BranchCompletion(Node *topScoringNode);
 
 
+  HeaviestBundle(Graph *graph);
 
-    HeaviestBundle(Graph *poMsa, int maxTreadCount);
-    /**
-     * Finds path containing best scoring node.
-     */
-    std::list<Node *> findTopScoringPath();
+  /**
+   * Finds path containing best scoring node.
+   */
+  std::list<Node *> FindTopScoringPath();
 
-    Node *getTopScoringNode();
 };
 
 #endif /* HEAVIESTBUNDLE_H_ */

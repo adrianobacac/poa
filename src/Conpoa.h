@@ -12,10 +12,12 @@
 
 class Conpoa {
 public:
-    Graph *poMsa;
-    SequenceBundler *bundler;
-    Conpoa(Graph *poMsa, SequenceBundler *bundler);
-    int generateConsesuses(int limit, int thread_cnt, OutputFormater *output);
+  Graph *graph_;
+  SequenceBundler *bundler_;
+
+  Conpoa(Graph *poMsa, SequenceBundler *bundler);
+
+  int GenerateConsesuses(int limit, int thread_cnt, OutputFormater *output);
 };
 
 

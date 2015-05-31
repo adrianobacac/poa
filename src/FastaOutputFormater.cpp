@@ -5,16 +5,16 @@
 #include <fstream>
 #include "FastaOutputFormater.h"
 
-void FastaOutputFormater::format(std::string file_path, Graph *poMsa) {
-    std::ofstream outfile (file_path);
-    for(Seq *cons : poMsa->cons){
-        outfile << ">" << cons->name << "_" << cons->title << std::endl;
-        std::list<Node *> nodes;
-        cons->nodes(&nodes);
-        for(Node *node: nodes){
-            outfile << node->nucl;
-        }
-        outfile << std::endl;
+void FastaOutputFormater::Format(std::string file_path, Graph *poMsa) {
+  std::ofstream outfile(file_path);
+  for (Seq *cons : poMsa->consensuses()) {
+    outfile << ">" << cons->name() << "_" << cons->title() << std::endl;
+    std::list<Node *> nodes;
+    cons->GetNodes(&nodes);
+    for (Node *node: nodes) {
+      outfile << node->nucl();
     }
-    outfile.close();
+    outfile << std::endl;
+  }
+  outfile.close();
 }

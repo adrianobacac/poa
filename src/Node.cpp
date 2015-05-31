@@ -7,59 +7,62 @@
 
 #include "Node.h"
 
-Node::Node(int index, char nucl, std::set<Seq *> seqs, std::set<int> alnNodesId) :
-		index(index), nucl(nucl), seqs(seqs), alignedWithNodeIds(alnNodesId)
-, score(0), bestPrevious(nullptr), _times_visited(0) {
+Node::Node(int index, char nucl, std::set<Seq *> seqs, std::set<int> aln_nodes_id) :
+    index_(index), nucl_(nucl), seqs_(seqs), aligned_with_node_ids_(aln_nodes_id),
+    score_(0),
+    best_previous_(nullptr), times_visited_(0) {
 }
 
-void Node::addToNext(Link* next) {
-	this->next.push_back(next);
+void Node::AddExitLink(Link *next) {
+  exit_links_.push_back(next);
 }
 
-void Node::addSeq(Seq *seq){
-	this->seqs.insert(seq);
+void Node::AddSeq(Seq *seq) {
+  seqs_.insert(seq);
 }
 
-std::list<Node*> Node::traceback() {
-	std::list<Node *> *path = new std::list<Node *>();
-	Node *node = this;
-	while (node) {
-		path->insert(path->begin(), node);
-		node = node->bestPrevious;
-	}
-	return *path;
-}
-
-
-std::string Node::dotFormat() {
-	return  "i" + std::to_string(this->index) + "_" + std::string(1, this->nucl)   +"_" + std::to_string(this->score);
-}
-
-bool Node::hasSeq(Seq *querySeq){
-	return (std::find(this->seqs.begin(), this->seqs.end(), querySeq) != this->seqs.end());
-}
-
-Link *Node::LinkTo(Seq *querySeq){
-	for (Link *link: next){
-		if (std::find(link->seqs.begin(), link->seqs.end(), querySeq) != link->seqs.end()){
-			return link;
-		}
-	}
-	return nullptr;
+std::list<Node *> Node::Traceback() {
+  std::list<Node *> *path = new std::list<Node *>();
+  Node *node = this;
+  while (node) {
+    path->insert(path->begin(), node);
+    node = node->best_previous_;
+  }
+  return *path;
 }
 
 
-Link *Node::LinkTo(Node *queryNode){
-	for (Link *link : next){
-		if (link->next == queryNode){
-			return link;
-		}
-	}
-	return nullptr;
+std::string Node::DotFormat() {
+  return "i" + std::to_string(index_) + "_" + std::string(1, nucl_) + "_" +
+         std::to_string(score_);
+}
+
+bool Node::HasSeq(Seq *querySeq) {
+  return (std::find(seqs_.begin(), seqs_.end(), querySeq) != seqs_.end());
+}
+
+Link *Node::LinkTo(Seq *querySeq) {
+  for (Link *link: exit_links_) {
+    auto seqs = link->seqs();
+    if (std::find(seqs.begin(), seqs.end(), querySeq) != seqs.end()) {
+      return link;
+    }
+  }
+  return nullptr;
+}
+
+
+Link *Node::LinkTo(Node *queryNode) {
+  for (Link *link : exit_links_) {
+    if (link->next_node() == queryNode) {
+      return link;
+    }
+  }
+  return nullptr;
 }
 
 Node::~Node() {
-	for (Link *link : next){
-		delete link;
-	}
+  for (Link *link : exit_links_) {
+    delete link;
+  }
 }

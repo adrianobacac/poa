@@ -11,7 +11,7 @@
 
 class PoGraphCreator {
 public:
-    Graph *create(std::string po_path);
+  Graph *Create(std::string po_path);
 };
 
 

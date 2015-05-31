@@ -8,20 +8,15 @@
 
 #include "InclusionRule.h"
 
-class InternalGapLength: public InclusionRule {
+class InternalGapLength : public InclusionRule {
 public:
-    int _limit;
-    int _gap_length;
-    int _temp_gap_length;
+  int limit_;
 
-    bool _was_first_match;
+  virtual ~InternalGapLength();
 
-    virtual ~InternalGapLength();
+  InternalGapLength(int limit);
 
-    InternalGapLength(int limit);
-
-    virtual bool check(Seq *seq, Seq *cons);
-
+  virtual bool Check(Seq *seq, Seq *cons);
 
 
 };

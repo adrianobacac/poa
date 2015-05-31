@@ -8,32 +8,33 @@
 #include "Seq.h"
 #include <cassert>
 
-Seq::Seq(std::string name, std::string title, int nodeCnt,
-		int weight):name(name), title(title), nodeCnt(nodeCnt), weight(weight), consensus(nullptr), startNode(nullptr) {
+Seq::Seq(std::string name, std::string title, int node_cnt,
+         int weight) : name_(name),
+                       title_(title),
+                       node_cnt_(node_cnt),
+                       weight_(weight),
+                       consensus_(nullptr),
+                       start_node_(nullptr) {
 }
 
-void Seq::rescaleWeight(int factor) {
-	weight *= factor;
+void Seq::RescaleWeight(int factor) {
+  weight_ *= factor;
 }
 
-void Seq::setStartNode(Node *startNode){
-	assert(startNode->hasSeq(this));
-	this->startNode = startNode;
-}
 
-void Seq::nodes(std::list<Node *> *nodeList){
-	assert(this->startNode != nullptr);
-	assert(nodeList != nullptr);
-	nodeList->clear();
-	Node *node = this->startNode;
-	nodeList->push_back(node);
+void Seq::GetNodes(std::list<Node *> *nodeList) {
+  assert(start_node_ != nullptr);
+  assert(nodeList != nullptr);
+  nodeList->clear();
+  Node *node = start_node_;
+  nodeList->push_back(node);
 
-	Link *link = node->LinkTo(this);
-	while (link){
-		node = link->next;
-		nodeList->push_back(node);
-		link = node->LinkTo(this);
-	}
-	
+  Link *link = node->LinkTo(this);
+  while (link) {
+    node = link->next_node();
+    nodeList->push_back(node);
+    link = node->LinkTo(this);
+  }
+
 
 }

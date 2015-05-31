@@ -1,1 +1,2 @@
-seq_percentage_in_consensus 0 1
+seq_percentage_in_consensus 0.8 1
+internal_gap_length 40

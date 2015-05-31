@@ -7,117 +7,95 @@
 
 #include "HeaviestBundle.h"
 
-void HeaviestBundle::processBranch(Node *start) {
+void HeaviestBundle::ProcessBranch(Node *start) {
 
-	Node *localMaxScorer = start;
+  Node *local_max_scorer = start;
+  Node *current = start;
 
-	if (start->previous.empty()) {
-		//start->score = 0;
-	}
-	Node *current = start;
+  while (true) {
+    auto entry_link_cnt = current->entry_links().size();
+    if (entry_link_cnt > 1) {
+      current->MarkVisited();
+      if (current->times_visited() != entry_link_cnt) {
+        break;
+      }
+    }
+    // reset for next round
+    current->ClearVisited();
+    if (entry_link_cnt > 0) {
 
-	
-	while (true) {
+      // trazimo najbolji prijasnji
+      int maxWeight = -1; // sigurno nece bit
+      int max_previous_score = 0; // gledamo ako imaju istu tezinu rubova
+      Node *best_previous_scorer = nullptr;
+      for (Link *link : current->entry_links()) {
+        int weight = link->Weight();
+        Node *previous_node = link->previous_node();
+        if (weight > maxWeight
+            || (weight == maxWeight
+                && previous_node->score() > max_previous_score)) {
+          maxWeight = weight;
+          best_previous_scorer = previous_node;
+          max_previous_score = previous_node->score();
+        }
+      }
 
-		if (current->previous.size() > 1) {
-			current->_times_visited++;
-			if(current->_times_visited != current->previous.size()){
-				break;
-			}
+      current->set_best_previous(best_previous_scorer);
+      current->set_score(best_previous_scorer->score() + maxWeight);
 
-		}
-		// reset for next round
-		current->_times_visited = 0;
-		if (current->previous.size() > 0) {
+      if (current->score() > local_max_scorer->score()) {
+        local_max_scorer = current;
+      }
+    }
+    auto exit_links = current->exit_links();
+    if (exit_links.size() > 1) {
+      for (unsigned int i = 1; i < exit_links.size(); ++i) {
+        to_process_.push(exit_links[i]->next_node());
+      }
+    }
+    if (exit_links.empty()) {
+      ends_.push_back(current);
+      break;
+    }
+    current = exit_links[0]->next_node();
 
-			// trazimo najbolji prijasnji
-			int maxWeight = -1; // sigurno nece bit
-			int maxPreviousScore = 0; // gledamo ako imaju istu tezinu rubova
-			Node *bestPreviousScorer;
-			for (Link *link : current->previous) {
-				int weight = link->weight();
-
-				if (weight > maxWeight
-						|| (weight == maxWeight
-								&& link->previous->score > maxPreviousScore)) {
-					maxWeight = weight;
-					bestPreviousScorer = link->previous;
-					maxPreviousScore = link->previous->score;
-				}
-			}
-
-			current->bestPrevious = bestPreviousScorer;
-			current->score = bestPreviousScorer->score + maxWeight;
-
-			if(current->score > localMaxScorer->score){
-				localMaxScorer = current;
-			}
-		}
-
-
-		if (current->next.size() > 1) {
-			// std::cout << "multiple next: "<<current->nucl <<std::endl;
-			// SYNC zbog pristupa toProcess, treba probudit main
-			for (unsigned int i = 1; i < current->next.size(); ++i) {
-				this->_toProcess.push(current->next[i]->next);
-			}
-			// END SYNC
-		}
-		if (current->next.empty()) {
-			this->_ends.push_back(current);
-			break;
-		}
-		current = current->next[0]->next;
-
-	}
-	// SYNC zavrsi obradu
-	if (this->_topScoringNode == nullptr) {
-		this->_topScoringNode = localMaxScorer;
-	} else if (localMaxScorer->score > this->_topScoringNode->score) {
-		this->_topScoringNode = localMaxScorer;
-	}
-	// END SYNC
+  }
+  if (top_scoring_node_ == nullptr) {
+    top_scoring_node_ = local_max_scorer;
+  } else if (local_max_scorer->score() > top_scoring_node_->score()) {
+    top_scoring_node_ = local_max_scorer;
+  }
 }
 
-Node *HeaviestBundle::branchCompletion(Node *topScoringNode) {
-	if (topScoringNode->next.size() != 0){
-		Node *best = this->_ends[0];
-		for (Node *ending : this->_ends){
-			if (ending->score > best->score){
-				best = ending;
-			}
-		}
-		this->_topScoringNode = best;
-	}
-	return this->_topScoringNode;
+Node *HeaviestBundle::BranchCompletion(Node *topScoringNode) {
+  if (!topScoringNode->exit_links().empty()) {
+    Node *best = ends_[0];
+    for (Node *ending : ends_) {
+      if (ending->score() > best->score()) {
+        best = ending;
+      }
+    }
+    top_scoring_node_ = best;
+  }
+  return top_scoring_node_;
 }
 
-HeaviestBundle::HeaviestBundle(Graph *poMsa, int maxThreadCount) :
-	_poMsa(poMsa),
-	_topScoringNode(nullptr),
-	_ends(std::vector<Node *>()),
-	_activeThreadCount(0),
-	_maxThreadCount(maxThreadCount),
-	_toProcess(std::queue<Node *>()){
+HeaviestBundle::HeaviestBundle(Graph *poMsa) :
+    graph_(poMsa),
+    top_scoring_node_(nullptr),
+    to_process_(std::queue<Node *>()) {
 }
 
-std::list<Node *> HeaviestBundle::findTopScoringPath() {
-	for (Node* start : this->_poMsa->getStarts()) {
-		this->_toProcess.push(start);
-	}
+std::list<Node *> HeaviestBundle::FindTopScoringPath() {
+  for (Node *start : graph_->starts()) {
+    this->to_process_.push(start);
+  }
 
-	while (!this->_toProcess.empty()) {
-		if (this->_activeThreadCount < this->_maxThreadCount) {
-			Node *localStart = this->_toProcess.front();
-			this->_toProcess.pop();
+  while (!to_process_.empty()) {
+    Node *localStart = to_process_.front();
+    to_process_.pop();
+    ProcessBranch(localStart);
+  }
+  return BranchCompletion(top_scoring_node_)->Traceback();
 
-			this->processBranch(localStart);
-		}
-	}
-
-	return this->branchCompletion(this->_topScoringNode)->traceback();
-}
-
-Node* HeaviestBundle::getTopScoringNode() {
-	return this->_topScoringNode;
 }

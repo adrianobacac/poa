@@ -9,10 +9,12 @@
 #include "InclusionRule.h"
 
 class RuleFactory {
-public:
-    int createRules(std::string filePath, std::list<InclusionRule *> *rules);
 private:
-    InclusionRule *createRule(std::string line);
+  InclusionRule *CreateRule(std::string line);
+
+public:
+  int CreateRules(std::string file_path, std::list<InclusionRule *> *rules);
+
 };
 
 

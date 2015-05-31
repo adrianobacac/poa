@@ -6,44 +6,47 @@
 #include "HeaviestBundle.h"
 
 
-Conpoa::Conpoa(Graph *poMsa, SequenceBundler *bundler):poMsa(poMsa), bundler(bundler){
+Conpoa::Conpoa(Graph *poMsa, SequenceBundler *bundler) : graph_(poMsa),
+                                                         bundler_(bundler) {
 }
 
 
-int Conpoa::generateConsesuses(int limit, int thread_cnt, OutputFormater *output){
+int Conpoa::GenerateConsesuses(int limit, int thread_cnt,
+                               OutputFormater *output) {
 
-    HeaviestBundle *hb = new HeaviestBundle(poMsa, thread_cnt);
-    unsigned long unbunbled_seq_cnt = poMsa->seqs.size();
-    while (unbunbled_seq_cnt && limit != 0){
-        limit--;
-        // pronadi najbolji put
-        std::list<Node *> bestPath;
-        bestPath = hb->findTopScoringPath();
-        // gotovo nalazenje najboljeg puta
+  HeaviestBundle *hb = new HeaviestBundle(graph_);
+  int unbunbled_seq_cnt = graph_->seq_cnt();
+  while (unbunbled_seq_cnt && limit != 0) {
+    --limit;
+    // pronadi najbolji put
+    std::list<Node *> bestPath;
+    bestPath = hb->FindTopScoringPath();
+    // gotovo nalazenje najboljeg puta
 
-        // stvori novu sekvencu
-        Seq *new_consensus = new Seq("consensus", "", (int) bestPath.size(), 0);
-        poMsa->cons.push_back(new_consensus);
-        poMsa->createSeqOnPath(new_consensus, bestPath);
-        new_consensus->setStartNode(bestPath.front());
-        // gotovo stvaranje nove sekvence
+    // stvori novu sekvencu
+    Seq *new_consensus = new Seq("consensus", "", (int) bestPath.size(), 0);
+    graph_->AddConsensus(new_consensus);
+    graph_->CreateSeqOnPath(new_consensus, &bestPath);
+    new_consensus->set_start_node(bestPath.front());
+    // gotovo stvaranje nove sekvence
 
-        // pronadi slicne sekvence
-        std::vector<Seq *> bundle;
-        int seqs_bundled = bundler->addSequencesToBundle(&poMsa->seqs, new_consensus, &bundle);
-        unbunbled_seq_cnt -= seqs_bundled;
-        new_consensus->title = std::to_string(seqs_bundled);
-        if (seqs_bundled > 0){
-            for (Seq *seq : bundle){
-                seq->rescaleWeight(0);
-            }
-        }
-        else{
-            break;
-        }
+    // pronadi slicne sekvence
+    std::vector<Seq *> bundle;
+    int seqs_bundled = bundler_->AddSequencesToBundle(graph_->seqs(),
+                                                      new_consensus, &bundle);
+    unbunbled_seq_cnt -= seqs_bundled;
+    new_consensus->set_title(std::to_string(seqs_bundled));
+    if (seqs_bundled > 0) {
+      for (Seq *seq : bundle) {
+        seq->RescaleWeight(0);
+      }
     }
-    delete hb;
-    output->format("out.fa", poMsa);
-    return 0;
+    else {
+      break;
+    }
+  }
+  delete hb;
+  output->Format("out.fa", graph_);
+  return 0;
 }
 

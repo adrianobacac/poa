@@ -15,23 +15,39 @@
 #include "Seq.h"
 
 class Node;
+
 class Seq;
 
 class Link {
 public:
-	Node *previous;
-	Node *next;
+  Node *previous_node_;
+  Node *next_node_;
+  std::vector<Seq *> seqs_;
 
-	std::vector<Seq *> seqs;
+  bool HasSeq(Seq *querySeq);
 
-	Link(Node *previous, Node *next);
+  void AddSeq(Seq *seq);
 
-	int weight();
-	
-	bool hasSeq(Seq *querySeq);
-	void addSeq(Seq *seq);
+  std::vector<Seq *> seqs() { return seqs_; };
+  //void AddSeq(Seq *seq){seqs_.push_back(seq);}
 
-	virtual ~Link();
+
+  Node *previous_node() const { return previous_node_; }
+
+  void set_previous_node(Node *previous_node) { previous_node_ = previous_node; }
+
+
+  Node *next_node() const { return next_node_; }
+
+  void set_next_node(Node *next_node) { next_node_ = next_node; }
+
+
+  Link(Node *previous, Node *next);
+
+  int Weight();
+
+
+  virtual ~Link();
 };
 
 #endif /* LINK_H_ */

@@ -8,8 +8,8 @@
 
 #include "OutputFormater.h"
 
-class FastaOutputFormater:public OutputFormater {
-    void format(std::string file_path, Graph *poMsa);
+class FastaOutputFormater : public OutputFormater {
+  void Format(std::string file_path, Graph *poMsa);
 };
 
 

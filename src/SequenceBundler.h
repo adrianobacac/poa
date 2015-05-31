@@ -10,21 +10,26 @@
 #include <vector>
 #include <set>
 
-class SequenceBundler
-{
+class SequenceBundler {
+private:
+  bool ApplyInsertionRules(Seq *seq, Seq *cons);
+
 public:
-	ThreadPool *_pool;
-	std::set<InclusionRule *> rules;
-	
-	SequenceBundler(ThreadPool *pool);
-	
-	virtual ~SequenceBundler();
+  ThreadPool *pool_;
+  std::set<InclusionRule *> rules_;
 
-	void addInclusionRule(InclusionRule *rule);
-	void removeInclusionRule(InclusionRule *rule);
+  SequenceBundler(ThreadPool *pool);
 
-	int addSequencesToBundle(std::vector<Seq *> *seqs, Seq *consensus, std::vector<Seq *> *bundled);
-	bool _applyInsertionRules(Seq *seq, Seq *cons);
+  virtual ~SequenceBundler();
+
+  void AddInclusionRule(InclusionRule *rule);
+
+  void RemoveInclusionRule(InclusionRule *rule);
+
+  int AddSequencesToBundle(std::vector<Seq *> seqs, Seq *consensus,
+                           std::vector<Seq *> *bundled);
+
+
 };
 
 #endif // POA_SEQUENCEBUNDLER_H_

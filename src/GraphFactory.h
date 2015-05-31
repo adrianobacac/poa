@@ -11,8 +11,7 @@
 
 class GraphFactory {
 public:
-    Graph *create(std::string path);
-
+  Graph *Create(std::string path);
 };
 
 

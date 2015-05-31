@@ -11,7 +11,7 @@
 
 class OutputFormater {
 public:
-    virtual void format(std::string file_path, Graph *poMsa)=0;
+  virtual void Format(std::string file_path, Graph *poMsa) = 0;
 };
 
 
