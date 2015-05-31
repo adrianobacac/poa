@@ -24,6 +24,7 @@
 #include "OutputFormater.h"
 #include "FastaOutputFormater.h"
 #include "GraphFactory.h"
+#include "Conpoa.h"
 
 using namespace std;
 
@@ -43,12 +44,10 @@ int parse_input(int argc, char * const argv[], string *input, string *conf, int 
             { "threads", 1, NULL, 't'},
             { "limit", 1, NULL, 'l'}
 	};
-
 	do {
 		next_option = getopt_long(argc, argv, short_options, long_options, NULL);
 		switch (next_option) {
 			case 'i':
-				/* User requested help */
 				*input = optarg;
 				break;
 			case 'c':
@@ -78,23 +77,7 @@ int parse_input(int argc, char * const argv[], string *input, string *conf, int 
 	return (EXIT_SUCCESS);
 }
 
-int parse_config(std::string filePath, std::list<InclusionRule *> *rules){
-	std::ifstream fin;
-	fin.open(filePath);
 
-	if (!fin.good()) {
-		throw "File " + std::string(filePath) + " can't be opened";
-	}
-	std::string line;
-	while(std::getline(fin, line)){
-
-		InclusionRule *rule = RuleFactory::createRule(line);
-		if (rule){
-			rules->push_back(rule);
-		}
-	}
-	return EXIT_SUCCESS;
-}
 int main(int argc, char * const argv[]) {
 
 	string input;
@@ -114,17 +97,15 @@ int main(int argc, char * const argv[]) {
 	Graph *poMsa;
 	try {
         poMsa = graphFactory.create(input);
-		//poMsa = new Graph(input);
 	}catch (std::string message){
 		std::cerr << message << std::endl;
 		exit(-1);
 	}
 
-	poMsa->drawGraph("graph_start");
+	RuleFactory ruleFactory;
 	std::list<InclusionRule *> rules;
-
 	try {
-		parse_config(config, &rules);
+		ruleFactory.createRules(config, &rules);
 	}catch (std::string message){
 		std::cerr << message << std::endl;
 		exit(-1);
@@ -137,58 +118,13 @@ int main(int argc, char * const argv[]) {
 		bundler->addInclusionRule(rule);
 	}
 
-	HeaviestBundle *hb = new HeaviestBundle(poMsa, thread_cnt);
-
-	unsigned long unbunbled_seq_cnt = poMsa->seqs.size();
-	while (unbunbled_seq_cnt && limit != 0){
-        limit--;
-		// pronadi najbolji put
-		std::list<Node *> bestPath;
-		bestPath = hb->findTopScoringPath();
-		// gotovo nalazenje najboljeg puta
-
-		// stvori novu sekvencu
-		Seq *new_consensus = new Seq("consensus", "", bestPath.size(), 0);
-		poMsa->cons.push_back(new_consensus);
-		poMsa->createSeqOnPath(new_consensus, bestPath);
-		new_consensus->setStartNode(bestPath.front());
-		poMsa->drawGraph("graph" + to_string(unbunbled_seq_cnt));
-
-		/*
-		for (Node *node : bestPath) {
-			std::cout << node->nucl;
-		}
-		 */
-		std::cout << std::endl;
-
-		// gotovo stvaranje nove sekvence
-
-		// pronadi slicne sekvence
-
-
-		std::vector<Seq *> bundle;
-		int seqs_bundled = bundler->addSequencesToBundle(&poMsa->seqs, new_consensus, &bundle);
-		unbunbled_seq_cnt -= seqs_bundled;
-		new_consensus->title = to_string(seqs_bundled);
-		if (seqs_bundled > 0){
-			std::cout << "pronasao slicnih sekvenci: " << seqs_bundled << std::endl;
-
-			for (Seq *seq : bundle){
-				seq->rescaleWeight(0);
-				// std::cout << seq->name << std::endl;
-			}
-			// std::cout << "-----------------" << std::endl;
-		}
-		else{
-			std::cout << "nisam pronasao slicne sekvence" << std::endl;
-
-			break;
-		}
-		//std::getchar();
-	}
 	OutputFormater *output = new FastaOutputFormater();
-	output->format("out.fa", poMsa);
 
+	Conpoa conpoa(poMsa, bundler);
+	conpoa.generateConsesuses(limit, thread_cnt, output);
+
+	delete bundler;
+	delete poMsa;
 	for (InclusionRule *rule : rules){
 		delete rule;
 	}

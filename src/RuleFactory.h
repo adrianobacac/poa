@@ -10,7 +10,9 @@
 
 class RuleFactory {
 public:
-    static InclusionRule *createRule(std::string line);
+    int createRules(std::string filePath, std::list<InclusionRule *> *rules);
+private:
+    InclusionRule *createRule(std::string line);
 };
 
 
