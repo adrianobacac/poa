@@ -42,8 +42,8 @@ int SequenceBundler::AddSequencesToBundle(std::vector<Seq *> seqs, Seq *consensu
 
   std::mutex *mylock = new std::mutex;
   for (Seq *seq : seqs) {
-    if (!seq->HasConsensus()) {
 
+    if (!seq->HasConsensus()) {
       results.emplace_back(
           pool_->enqueue([this, seq, consensus, bundled, mylock] {
             if (ApplyInsertionRules(seq, consensus)) {
@@ -56,7 +56,6 @@ int SequenceBundler::AddSequencesToBundle(std::vector<Seq *> seqs, Seq *consensu
             return 0;
           })
       );
-
     }
   }
   delete mylock;

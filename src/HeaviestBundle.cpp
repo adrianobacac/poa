@@ -90,12 +90,10 @@ std::list<Node *> HeaviestBundle::FindTopScoringPath() {
   for (Node *start : graph_->starts()) {
     this->to_process_.push(start);
   }
-
   while (!to_process_.empty()) {
     Node *localStart = to_process_.front();
     to_process_.pop();
     ProcessBranch(localStart);
   }
   return BranchCompletion(top_scoring_node_)->Traceback();
-
 }
