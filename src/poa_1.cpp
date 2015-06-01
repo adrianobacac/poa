@@ -34,7 +34,7 @@ int parse_input(int argc, char *const argv[], string *input, string *conf,
   *input = "in.po";
   *conf = "config.txt";
   *thread_count = 1;
-  *limit = -1;
+  *limit = 10;
   int next_option;
   /* String of short options */
   const char *short_options = "t:i:c:l:";
